@@ -278,19 +278,9 @@ export class PDFService {
 
   isPredyc = true
 
-  async downloadFichaTecnicaCourseDiplomadoP21(modulo,course, instructor, pdf: jsPDF = null, addToDocument: boolean = false,isPredyc = true) {
+  async downloadFichaTecnicaCourseDiplomadoP21(modulo,course, instructor, pdf: jsPDF, addToDocument: boolean = false,isPredyc = true) {
 
     console.log(course)
-
-    if (!pdf) {
-      pdf = new jsPDF("p", "mm", "a4", true) as jsPDF;
-  
-      pdf.addFileToVFS("Roboto-Regular.ttf", robotoRegular);
-      pdf.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-  
-      pdf.addFileToVFS("Roboto-Bold.ttf", robotoBold);
-      pdf.addFont("Roboto-Bold.ttf", "Roboto", "bold");
-    }
 
     this.pageHeigth = pdf.internal.pageSize.height; //297mm
     this.pageWidth = pdf.internal.pageSize.width; //210mm
@@ -424,18 +414,18 @@ export class PDFService {
           lineSpacingFactor: 0.8
         }, pdf);
 
-        currentLine = this._addFormatedText({
+        currentLine = this._addFormatedTextP21({
           text: course.descripcion,
           course: course,
           x: 0,
-          y:currentLine + 3,
+          y:currentLine + 8,
           color: 'black',
           bold: false,
           size: 10,
           textAlign: "left",
           maxLineWidth: this.pageWidth - 20,
           firstLineMaxWidth: this.pageWidth - 95,
-          lineSpacingFactor: 1
+          lineSpacingFactor: 1.5
         }, pdf);
       }
 
@@ -2879,7 +2869,7 @@ export class PDFService {
 
 
   
-    _addFormatedText(opts: textOpts, pdf: jsPDF): number {
+  _addFormatedText(opts: textOpts, pdf: jsPDF): number {
       const imgWidth = 30;
       const imgHeight = imgWidth / 4.65517241379;
 
@@ -2966,10 +2956,10 @@ export class PDFService {
   
       for (let index = 0; index < textLines.length; index++) {
           const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
-          console.log('lineHeight',textLines[index],lineHeight)
+          console.log('lineHeight',textLines[index].text,lineHeight)
           const { text, offset, isBullet,isSubBullet } = textLines[index];
 
-          console.log('salto de pagina texto',opts.y + (index + 1) * lineHeight > (pageHeigth+10))
+          // console.log('salto de pagina texto',opts.y + (index + 1) * lineHeight > (pageHeigth+10))
 
   
           if (opts.y + (index + 1) * lineHeight > (pageHeigth+10)) {
@@ -3013,6 +3003,148 @@ export class PDFService {
   
       return nextHeightValue;
   }
+
+
+  _addFormatedTextP21(opts: textOpts, pdf: jsPDF): number {
+
+    const horizontalMargin = 10
+    const verticalMargin = 4
+
+    const imgWidth = 30;
+    const imgHeight = imgWidth / 4.65517241379;
+
+    const pageHeigth = pdf.internal.pageSize.height; //297mm
+    const pageWidth = pdf.internal.pageSize.width; //210mm
+
+    const addFooterAndTitle = () => {
+        let oldFontSize = pdf.getFontSize();
+        
+        const posY = pageHeigth - imgHeight - 5;
+        const maxTextWidth = pageWidth - imgWidth - 15;
+        let courseTitle = opts?.course?.titulo?  opts?.course?.titulo: opts.tituloFooter;
+
+        while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
+            courseTitle = courseTitle.slice(0, -1);
+        }
+        
+        let textoEmpresa = 'Predyc';
+        let margen = 20;
+        if (!this.isPredyc) {
+            textoEmpresa = 'Predictiva21';
+            margen = 25;
+        }
+
+        pdf.setFontSize(8);
+        pdf.setFont("Roboto", "normal");
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
+        pdf.setFontSize(9);
+        pdf.text(textoEmpresa, pageWidth - margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+        pdf.setFontSize(oldFontSize);
+    };
+
+    if (opts.y > pageHeigth - 30) {
+        pdf.addPage();
+        addFooterAndTitle();
+        opts.y = 15;
+    }
+
+    pdf.setFont("Roboto", opts?.bold ? "bold" : "normal");
+    if (opts?.size) {
+        pdf.setFontSize(opts.size);
+    }
+
+    opts.color == 'white' ? pdf.setTextColor(255, 255, 255) : pdf.setTextColor(0, 0, 0);
+
+    const maxLineWidth = opts?.maxLineWidth ? opts.maxLineWidth : pageWidth - horizontalMargin * 2;
+
+    let textLines = [];
+    const paragraphs = opts.text.split('\n');
+
+    for (const paragraph of paragraphs) {
+        let offset = 0;
+        let isBullet = false;
+        let isSubBullet = false;
+
+
+        let formattedParagraph = paragraph;
+        if (formattedParagraph.trim().startsWith('*')) {
+            formattedParagraph = `• ${formattedParagraph.trim().slice(1).trim()}`;
+            offset = 5;
+            isBullet = true;
+        }
+
+        if (formattedParagraph.trim().startsWith('>')) {
+          formattedParagraph = `• ${formattedParagraph.trim().slice(1).trim()}`;
+          offset = 8;
+          isBullet = true;
+          isSubBullet = true
+      }
+
+        const lines = pdf.splitTextToSize(formattedParagraph, maxLineWidth);
+        lines.forEach((line, index) => {
+            textLines.push({
+                text: line,
+                offset: isBullet ? offset : 0,
+                isBullet: isBullet && index === 0,  // Solo la primera línea del bullet
+                isSubBullet:isSubBullet,
+            });
+        });
+    }
+
+    const lineSpacingFactor = opts.lineSpacingFactor ?? 1;
+
+    for (let index = 0; index < textLines.length; index++) {
+      // Usar el tamaño de fuente actual para calcular lineHeight
+      const currentFontSize = pdf.getFontSize();
+      const lineHeight = currentFontSize * 0.35 * lineSpacingFactor; // Ajustar el multiplicador según el espaciado deseado
+  
+      const { text, offset, isBullet, isSubBullet } = textLines[index];
+  
+      // Verificar si es necesario un salto de página
+      if (opts.y + lineHeight > pageHeigth - 15) { // Restar el margen inferior
+          pdf.addPage();
+          addFooterAndTitle();
+          opts.y = 10; // Reiniciar la posición en la nueva página
+          index--; // Reprocesar la línea actual
+          continue;
+      }
+  
+      // Ajustar las posiciones de los bullets
+      if (isBullet) {
+          pdf.setFontSize(12); // Tamaño de fuente para el bullet
+          const bulletIcon = isSubBullet ? '\u2022' : '•';
+          pdf.text(
+              bulletIcon,
+              opts.x + horizontalMargin + offset,
+              opts.y + lineHeight,
+              { align: opts.textAlign }
+          );
+          pdf.setFontSize(opts.size); // Restaurar el tamaño de fuente
+          pdf.text(
+              text.slice(2).trim(),
+              opts.x + horizontalMargin + offset + 3,
+              opts.y + lineHeight,
+              { align: opts.textAlign }
+          );
+      } else {
+          pdf.text(
+              text,
+              opts.x + horizontalMargin + offset,
+              opts.y + lineHeight,
+              { align: opts.textAlign }
+          );
+      }
+  
+      // Incrementar la posición `opts.y`
+      opts.y += lineHeight;
+  }
+  
+
+    let nextHeightValue = opts.y + textLines.length * pdf.getLineHeight() * lineSpacingFactor / 2;
+
+    return nextHeightValue;
+}
 
   
   addFormatedText(opts: textOpts,pdf:jsPDF): number {
