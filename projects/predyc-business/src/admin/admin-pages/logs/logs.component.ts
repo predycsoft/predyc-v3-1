@@ -401,42 +401,42 @@ export class LogsComponent {
 
     // const courseTMP = await this.courseService.getCourseById("Uhxd9p7f3jHC8ksJfkjn")
     for (const course of allCourses) {
-      //console.log("-----", course.titulo)
+      console.log("-----", course.titulo)
       // const modulesFromDoc = course["modulos"]
       
 
-      // const modulesFromDoc =  await  firstValueFrom(this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).valueChanges())
-      const modulesFromDoc =  course['modulos']?course['modulos']:[]
-
-      if(modulesFromDoc.length == 0){
-        console.log('que mierda',course)
-      }
-      const numerosSet = new Set();
-      const duplicados = [];
+      const modulesFromDoc =  await  firstValueFrom(this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).valueChanges()) as any[]
+      const modulesFromCourse =  course['modulos']?course['modulos']:[]
       
-      for (let i = 0; i < modulesFromDoc.length; i++) {
-        const modulo = modulesFromDoc[i] as any;
-        if (numerosSet.has(modulo.numero)) {
-          duplicados.push(modulo);
-          //await this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).doc(modulo.id).delete()
-        } else {
-          numerosSet.add(modulo.numero);
+      if(modulesFromCourse.length>0){
+        for (let i = 0; i < modulesFromCourse.length; i++) {
+          const modulo = modulesFromCourse[i] as any;
+          if(!modulo.id){
+            let moduloFind = modulesFromDoc.find(x=>x.numero == modulo.numero)
+            if(moduloFind){
+              modulo.id = moduloFind.id
+            }
+            else{
+              console.log('No se encontró modulo',course)
+            }
+          }
+  
         }
+
+        // guardar curso
+        await this.afs.collection(Curso.collection).doc(course.id).set({
+          modulos:modulesFromCourse
+        },{
+          merge: true 
+        })
       }
+      else{
+        console.log('revisar curso',course)
+      }
+
       
-      if (duplicados.length > 0) {
-        console.log('Duplicados encontrados:', duplicados);
-
-
-
-        revisarCursos.push(course)
-      } else {
-        //console.log('No hay duplicados.');
-      }
-
-      console.log(modulesFromDoc)
     };
-    console.log("XXXXXXX Fin",'Duplicados',revisarCursos)
+    console.log("XXXXXXX Fin",allCourses)
 
   
   }
