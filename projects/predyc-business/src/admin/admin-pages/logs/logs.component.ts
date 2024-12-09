@@ -17,6 +17,7 @@ import { Modulo } from 'projects/shared/models/module.model';
 import { Clase } from 'projects/shared/models/course-class.model';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
+import { firstValueFrom } from 'rxjs';
 
 export interface GroupedLogs {
   componentName: string;
@@ -392,36 +393,50 @@ export class LogsComponent {
   }
 
   async debugNewCoursesWithClasses() {
+
+    let revisarCursos = []
     const allCoursesSnapshot = await this.afs.collection(Curso.collection).ref.get()
     const allCourses = allCoursesSnapshot.docs.map(x => x.data() as Curso)
     console.log("***** allCourses", allCourses)
 
-    // const course = await this.courseService.getCourseById("Uhxd9p7f3jHC8ksJfkjn")
+    // const courseTMP = await this.courseService.getCourseById("Uhxd9p7f3jHC8ksJfkjn")
     for (const course of allCourses) {
-      console.log("-----", course.titulo)
-      const modulesFromDoc = course["modulos"]
-      // console.log("modulesFromDoc before", modulesFromDoc)
-      if (!modulesFromDoc) {
-        console.log("No tiene modulos")
-        continue
+      //console.log("-----", course.titulo)
+      // const modulesFromDoc = course["modulos"]
+      
+
+      // const modulesFromDoc =  await  firstValueFrom(this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).valueChanges())
+      const modulesFromDoc =  course['modulos']?course['modulos']:[]
+
+      if(modulesFromDoc.length == 0){
+        console.log('que mierda',course)
       }
-  
-      for (const module of modulesFromDoc) {
-        const classesDataPromises = module.clases.map(async (clase: DocumentReference) => {
-            const classSnapshot = await this.afs.collection(Clase.collection).doc(clase.id).ref.get();
-            return classSnapshot.exists ? classSnapshot.data() : null; // Si el documento existe, devuelve su data
-        });
-  
-        // Esperar a que se resuelvan todas las promesas para obtener las clases con su data
-        module.clases = await Promise.all(classesDataPromises);
+      const numerosSet = new Set();
+      const duplicados = [];
+      
+      for (let i = 0; i < modulesFromDoc.length; i++) {
+        const modulo = modulesFromDoc[i] as any;
+        if (numerosSet.has(modulo.numero)) {
+          duplicados.push(modulo);
+          //await this.afs.collection(`${Curso.collection}/${course.id}/${Modulo.collection}`).doc(modulo.id).delete()
+        } else {
+          numerosSet.add(modulo.numero);
+        }
       }
-      console.log("modulesFromDoc after", modulesFromDoc)
-  
-      await this.afs.collection(Curso.collection).doc(course.id).update(
-        {modulos: modulesFromDoc},
-      )
+      
+      if (duplicados.length > 0) {
+        console.log('Duplicados encontrados:', duplicados);
+
+
+
+        revisarCursos.push(course)
+      } else {
+        //console.log('No hay duplicados.');
+      }
+
+      console.log(modulesFromDoc)
     };
-    console.log("XXXXXXX Fin")
+    console.log("XXXXXXX Fin",'Duplicados',revisarCursos)
 
   
   }
