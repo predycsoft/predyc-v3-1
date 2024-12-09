@@ -326,7 +326,7 @@ async function getCourseById(courseId: string): Promise<any> {
       // const allClasses = classesSnapshot.docs.map(doc => doc.data());
   
       // Fetch modules for this course
-      const modulesSnapshot = await admin.firestore().collection(`${Curso.collection}/${courseId}/${Modulo.collection}`).get();
+      // const modulesSnapshot = await admin.firestore().collection(`${Curso.collection}/${courseId}/${Modulo.collection}`).get();
       // const modules = modulesSnapshot.docs.map(doc => doc.data());
       const modules = courseDoc["modulos"]
   
