@@ -394,6 +394,8 @@ export class LogsComponent {
 
   async debugNewCoursesWithClasses() {
 
+    return true
+
     let revisarCursos = []
     const allCoursesSnapshot = await this.afs.collection(Curso.collection).ref.get()
     const allCourses = allCoursesSnapshot.docs.map(x => x.data() as Curso)
