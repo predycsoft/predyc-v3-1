@@ -2882,12 +2882,15 @@ export class PDFService {
     _addFormatedText(opts: textOpts, pdf: jsPDF): number {
       const imgWidth = 30;
       const imgHeight = imgWidth / 4.65517241379;
+
+      const pageHeigth = pdf.internal.pageSize.height; //297mm
+      const pageWidth = pdf.internal.pageSize.width; //210mm
   
       const addFooterAndTitle = () => {
           let oldFontSize = pdf.getFontSize();
           
-          const posY = this.pageHeigth - imgHeight - 5;
-          const maxTextWidth = this.pageWidth - imgWidth - 15;
+          const posY = pageHeigth - imgHeight - 5;
+          const maxTextWidth = pageWidth - imgWidth - 15;
           let courseTitle = opts?.course?.titulo?  opts?.course?.titulo: opts.tituloFooter;
   
           while (pdf.getTextWidth(courseTitle) > maxTextWidth) {
@@ -2906,11 +2909,11 @@ export class PDFService {
           pdf.setTextColor(0, 0, 0);
           pdf.text(`${courseTitle} - ${this.fecha}`, 6, (posY + imgHeight / 2) + 2, { align: 'left' });
           pdf.setFontSize(9);
-          pdf.text(textoEmpresa, this.pageWidth - margen, (posY + imgHeight / 2) + 2, { align: 'left' });
+          pdf.text(textoEmpresa, pageWidth - margen, (posY + imgHeight / 2) + 2, { align: 'left' });
           pdf.setFontSize(oldFontSize);
       };
   
-      if (opts.y > this.pageHeigth - 30) {
+      if (opts.y > pageHeigth - 30) {
           pdf.addPage();
           addFooterAndTitle();
           opts.y = 15;
@@ -2923,7 +2926,7 @@ export class PDFService {
   
       opts.color == 'white' ? pdf.setTextColor(255, 255, 255) : pdf.setTextColor(0, 0, 0);
   
-      const maxLineWidth = opts?.maxLineWidth ? opts.maxLineWidth : this.pageWidth - this.horizontalMargin * 2;
+      const maxLineWidth = opts?.maxLineWidth ? opts.maxLineWidth : pageWidth - this.horizontalMargin * 2;
   
       let textLines = [];
       const paragraphs = opts.text.split('\n');
@@ -2942,7 +2945,7 @@ export class PDFService {
           }
 
           if (formattedParagraph.trim().startsWith('>')) {
-            formattedParagraph = `‣ ${formattedParagraph.trim().slice(1).trim()}`;
+            formattedParagraph = `• ${formattedParagraph.trim().slice(1).trim()}`;
             offset = 8;
             isBullet = true;
             isSubBullet = true
@@ -2963,9 +2966,13 @@ export class PDFService {
   
       for (let index = 0; index < textLines.length; index++) {
           const lineHeight = pdf.getLineHeight() * lineSpacingFactor;
+          console.log('lineHeight',textLines[index],lineHeight)
           const { text, offset, isBullet,isSubBullet } = textLines[index];
+
+          console.log('salto de pagina texto',opts.y + (index + 1) * lineHeight > (pageHeigth+10))
+
   
-          if (opts.y + (index + 1) * lineHeight > (this.pageHeigth+10)) {
+          if (opts.y + (index + 1) * lineHeight > (pageHeigth+10)) {
               pdf.addPage();
               addFooterAndTitle();
               opts.y = -18;
@@ -3007,17 +3014,6 @@ export class PDFService {
       return nextHeightValue;
   }
 
-  _addFormatedText2(opts: textOpts, pdf: jsPDF, tituloFooter: string = ''): number {
-    return 3
-  }
-  
-  
-  
-  
-  
-  
-  
-  
   
   addFormatedText(opts: textOpts,pdf:jsPDF): number {
     const imgWidth = 30;  // Puedes ajustar este valor según tus necesidades
