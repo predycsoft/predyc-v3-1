@@ -41,8 +41,9 @@ export class ArticlesComponent {
 
   selectorpaginaOptions: { value: string, label: string }[] = [
     {value: "all", label: "Todos las paginas"},
-    {value: "predyc", label: "Articulos Predyc"},
-    {value: "predictiva", label: "Articulos predictiva"},
+    {value: "predyc", label: "Artículos Predyc"},
+    {value: "predictiva", label: "Artículos Predictiva"},
+    {value: "revista", label: "Artículos Revista"},
 
   ]
 

@@ -383,6 +383,7 @@ export class ArticleComponent {
         this.prevOrderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
         this.articleCategories = articleWithTagPillarsAndCoursesData.categories;
         this.articleTags = articleWithTagPillarsAndCoursesData.tags;
+        this.type=articleWithTagPillarsAndCoursesData?.type;
         this.articlePillars = articleWithTagPillarsAndCoursesData.pillars; 
         this.articleCourses = articleWithTagPillarsAndCoursesData.courses;
         this.articleRelatedArticles = articleWithTagPillarsAndCoursesData.relatedArticles;
@@ -393,6 +394,15 @@ export class ArticleComponent {
 
         this.previewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
         this.pastPreviewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
+
+        if(!this.type){
+          this.type = 'Predictiva'
+          if(this.isFromPredyc){
+            this.type = 'Predyc'
+          }
+        }
+
+
 
         if(!this.isFromPredyc){
           this.allCourses=this.allCoursesP21
@@ -416,7 +426,18 @@ export class ArticleComponent {
     }
   }
 
+  type =  'Predyc'
+
   changePage(){
+
+    if(this.type == 'Predyc'){
+      this.isFromPredyc = true
+    }
+    else{
+      this.isFromPredyc = false
+    }
+
+
 
 
 
@@ -736,7 +757,9 @@ export class ArticleComponent {
         }
         else {
           downloadURL = await this.uploadImage();
-          downloadURLFrebi = await this.uploadImage(this.selectedFileFreebi);
+          if(downloadURLFrebi){
+            downloadURLFrebi = await this.uploadImage(this.selectedFileFreebi);
+          }
 
         }
 
@@ -825,7 +848,8 @@ export class ArticleComponent {
           freebiFileInfo:this.freebiFileInfo,
           freebiTitulo:this.freebiTitulo,
           freebiResumen:this.freebiResumen,
-          urlImageFreebi:downloadURLFrebi
+          urlImageFreebi:downloadURLFrebi,
+          type:this.type,
         };
         
         console.log("dataToSave",dataToSave)
@@ -1020,16 +1044,16 @@ export class ArticleComponent {
     if (!this.title) {
       valid = false;
     }
-    if (!this.titleSEO) {
+    if (!this.titleSEO && this.type !='Revista') {
       valid = false;
     }
-    if (!this.summary) {
+    if (!this.summary && this.type !='Revista') {
       valid = false;
     }
-    if (!this.metaDescription) {
+    if (!this.metaDescription && this.type !='Revista') {
       valid = false;
     }
-    if (!this.keyWords) {
+    if (!this.keyWords && this.type !='Revista') {
       valid = false;
     }
     if (!this.selectedAuthorId) {
@@ -1044,7 +1068,7 @@ export class ArticleComponent {
     if (this.articleTags.length === 0) {
       valid = false;
     }
-    if (this.articleCourses.length === 0) {
+    if (this.articleCourses.length === 0 && this.type !='Revista') {
       valid = false;
     }
     if (!this.previewImage) {

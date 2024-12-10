@@ -109,11 +109,17 @@ export class ArticlesListComponent {
 
     filteredArticlesByAuthor = filteredArticlesByAuthor.filter(x => {
       const matchesAuthor = this.queryParamPagina ? 
-      this.queryParamPagina === "all" ? true :
-      x.isFromPredyc == (this.queryParamPagina == 'predyc'?true:false) : 
+          this.queryParamPagina === "all" ? true :
+          this.queryParamPagina === "predyc" ? 
+              x.isFromPredyc && x?.type !== 'Revista' : 
+          this.queryParamPagina === "predictiva" ? 
+              !x.isFromPredyc && x?.type !== 'Revista' : 
+          this.queryParamPagina === "revista" ? 
+              !x.isFromPredyc && x?.type === 'Revista' : 
+          true :
       true;
       return matchesAuthor;
-    }); 
+  });
 
     this.totalLength = filteredArticlesByAuthor.length;
     const startIndex = (this.queryParamPage - 1) * this.pageSize;
