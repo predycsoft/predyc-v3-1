@@ -835,7 +835,7 @@ export class PDFService {
 
   async addInstrcutorCV(pdf,course = null,instructor,isPredyc){
 
-    console.log(pdf,instructor)
+    console.log('Revisar',pdf,instructor)
     
     pdf.addPage();
 
@@ -884,6 +884,7 @@ export class PDFService {
     else{
       pdf.addImage(this.logoWhiteP21, 'png', 180, 3, imgWidtLogoWhite, imgHeightLogoWhite, '', 'SLOW');      
     }
+    
   
     await this.addFormattedInstructorCV(instructor, instructorSectionStartY, instructorSectionEndY, pdf);
 
@@ -930,34 +931,6 @@ export class PDFService {
 
     }
 
-    if(instructor.experienciaLaboral){
-      pdf.setFontSize(14);
-      currentLine = currentLine + 3;
-      currentLine = this._addFormatedText({
-        text: "Experiencia profesional",
-        course: course,
-        x: 0,
-        y: currentLine,
-        size: 11,
-        color: 'black',
-        bold: true,
-        textAlign: "left"
-      }, pdf);
-
-      pdf.setFontSize(10);
-      currentLine = this._addFormatedText({
-        text: instructor.experienciaLaboral,
-        course: course,
-        x: 0,
-        y: currentLine + 3,
-        size: 8,
-        color: 'black',
-        bold: false,
-        textAlign: "left"
-      }, pdf);
-
-    }
-
     if(instructor.destrezas){
       pdf.setFontSize(14);
       currentLine = currentLine + 3;
@@ -975,6 +948,35 @@ export class PDFService {
       pdf.setFontSize(10);
       currentLine = this._addFormatedText({
         text: instructor.destrezas,
+        course: course,
+        x: 0,
+        y: currentLine + 3,
+        size: 8,
+        color: 'black',
+        bold: false,
+        textAlign: "left"
+      }, pdf);
+
+    }
+
+
+    if(instructor.experienciaLaboral){
+      pdf.setFontSize(14);
+      currentLine = currentLine + 3;
+      currentLine = this._addFormatedText({
+        text: "Experiencia profesional",
+        course: course,
+        x: 0,
+        y: currentLine,
+        size: 11,
+        color: 'black',
+        bold: true,
+        textAlign: "left"
+      }, pdf);
+
+      pdf.setFontSize(10);
+      currentLine = this._addFormatedText({
+        text: instructor.experienciaLaboral,
         course: course,
         x: 0,
         y: currentLine + 3,
@@ -1536,8 +1538,10 @@ export class PDFService {
           const legendY = 30; // Posición debajo del encabezado
           const legendPadding = 5;
     
-          // Formatear la fecha en el estilo solicitado
-          const formattedDate = new Date(diplomado.fechaInicio).toLocaleDateString('es-ES', {
+          const [year, month, day] = diplomado.fechaInicio.split('-').map(Number); // Descomponer la fecha en partes
+          const adjustedDate = new Date(year, month - 1, day); // Crear la fecha sin considerar la hora local
+          
+          const formattedDate = adjustedDate.toLocaleDateString('es-ES', {
             day: '2-digit',
             month: 'long',
             year: 'numeric',
@@ -1556,6 +1560,9 @@ export class PDFService {
 
           }
           const legendHeight = textLines.length * 6 + legendPadding; // Altura basada en líneas y padding
+
+          legendWidth = (this.pageWidth - legendX) - 15
+
     
           // Dibujar el cuadro de la leyenda
           pdf.setFillColor(240, 240, 240);

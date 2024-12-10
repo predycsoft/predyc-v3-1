@@ -209,7 +209,7 @@ export class InstructorListComponent {
 
   performSearchLocal(searchTerm: string, page: number,sortOrder?) {
 
-    let instructores = structuredClone(this.instructores);
+    let instructores = (this.instructores);
 
     instructores = instructores.filter((x) => {
       if (!searchTerm || searchTerm === "") return true;
