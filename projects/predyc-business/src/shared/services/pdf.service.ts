@@ -1343,14 +1343,15 @@ export class PDFService {
         const instructor = course.instructorData?.nombre || 'Sin asignar';
   
         // Formatear la fecha
-        const formattedDate = course.fechaInicio
-          ? new Date(course.fechaInicio).toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: '2-digit',
-              year: '2-digit',
-            })
-          : 'Sin fecha';
-  
+
+        const [year, month, day] = course.fechaInicio.split('-').map(Number); // Descomponer la fecha en partes
+        const adjustedDate = new Date(year, month - 1, day); // Crear la fecha sin considerar la hora local
+        
+        const formattedDate = adjustedDate.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit',
+        });  
         // Construir la fila
         const row = [];
         if (j === 0 && diplomado.modules.length>1) {
@@ -1372,11 +1373,11 @@ export class PDFService {
           titleCourse =  modulo.titulo
         }
 
-        row.push({ nameCell:true, modulo:modulo,content: titleCourse, styles: { halign: 'left', valign: 'middle' } } ); // Contenidos
+        row.push({ nameCell:true, modulo:modulo,content: titleCourse, styles: { halign: 'left', valign: 'middle',fontSize: 8, } } ); // Contenidos
         if(true || cursos.length>1){
           row.push({ content:sesionNumber, styles: { halign: 'center' } }); // Sesión
         }
-        row.push({formattedDate:true, modulo:modulo,content: formattedDate, styles: { halign: 'center' } }); // Fecha
+        row.push({formattedDate:true, modulo:modulo,content: formattedDate, styles: { halign: 'center',fontSize: 8, } }); // Fecha
         if (j === 0) {
           row.push({
             content: totalDuration,
@@ -1494,7 +1495,7 @@ export class PDFService {
       head: [tableHeaders],
       body: tableRowsFinal,
       theme: 'grid',
-      styles: { font: 'helvetica', fontSize: 10, valign: 'middle' },
+      styles: { font: 'helvetica', fontSize: 9, valign: 'middle' },
       headStyles: { fillColor: [red, green, blue], halign: 'center' },
       columnStyles: {
         0: { halign: 'center' },
