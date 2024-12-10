@@ -2255,6 +2255,13 @@ export class CourseService {
   }
 
 
+  async getArticulosRevista(): Promise<any[]> {
+    return await firstValueFrom(
+      this.afs.collection<any>('article', ref => 
+        ref.where('type', '==', 'Revista')
+      ).valueChanges()
+    );
+  }
 
   
   

@@ -106,6 +106,43 @@ export class RevistaComponent {
       this.user = user;
     });
 
+    if (this.id === "new") {
+      this.isEditing = true;
+      const title = MAIN_TITLE + "Nueva revista P21";
+      this.titleService.setTitle(title);
+    } else {
+      this.isEditing = false;
+    }
+
+    this.coursesForExplorer = await this.courseService.getArticulosRevista() as any[]
+
+    console.log('coursesForExplorer',this.coursesForExplorer)
+
+    this.filteredCourses = combineLatest([
+      this.searchControl.valueChanges.pipe(startWith(""))]).pipe(
+      map(([searchText]) => {
+        // Si no hay texto de búsqueda ni categoría seleccionada, devolver todo
+        if (!searchText) return [];
+    
+        // Obtener los cursos disponibles
+        let filteredCourses = this.coursesForExplorer;
+    
+        // Filtrar por categoría si existe
+    
+        // Filtrar por texto de búsqueda si existe
+        if (searchText) {
+          alert('aqui')
+          const filterValue = this.removeAccents(searchText.toLowerCase());
+          filteredCourses = filteredCourses.filter((course) =>
+            this.removeAccents(course['title'].toLowerCase()).includes(filterValue)
+          );
+        }
+    
+        return filteredCourses;
+      })
+    );
+    
+
 
   }
 
