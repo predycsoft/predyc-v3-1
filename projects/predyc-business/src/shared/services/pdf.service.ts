@@ -306,6 +306,13 @@ export class PDFService {
     if(hasShowDetailsTrue){
       courseTitle = `${course.titulo}`;
     }
+    else{
+      let duracion = 0
+      modulo.clases.forEach(clase => {
+        duracion+=clase.duracion
+      });
+      course.duracion = duracion
+    }
 
   
     pdf.setFontSize(8);  // Ajustar el tamaño de la fuente
