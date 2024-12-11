@@ -414,19 +414,58 @@ export class PDFService {
           lineSpacingFactor: 0.8
         }, pdf);
 
-        currentLine = this._addFormatedTextP21({
-          text: course.descripcion,
-          course: course,
-          x: 0,
-          y:currentLine + 8,
-          color: 'black',
-          bold: false,
-          size: 10,
-          textAlign: "left",
-          maxLineWidth: this.pageWidth - 20,
-          firstLineMaxWidth: this.pageWidth - 95,
-          lineSpacingFactor: 1
-        }, pdf);
+        let modules: { titulo: string, clases: string[] }[] = [];
+        let currentModule: { titulo: string, clases: any[] } | null = null;
+
+        // Dividir el contenido en líneas
+        const lines = course.descripcion.split('\n');
+
+        for (const line of lines) {
+          const trimmedLine = line.trim();
+
+          if (trimmedLine.startsWith('*') || trimmedLine.startsWith('>')) {
+            // Es un bullet (clase)
+            const clase = {
+              titulo:trimmedLine.slice(1).trim(), // Quitar el '*' o '>' inicial
+              duracion:0
+            }
+            if (currentModule) {
+              currentModule.clases.push(clase);
+            }
+          } else if (trimmedLine) {
+            // Es un módulo (no empieza con '*' o '>')
+            if (currentModule) {
+              // Si hay un módulo activo, cerrarlo
+              modules.push(currentModule);
+            }
+            // Crear un nuevo módulo
+            currentModule = { titulo: trimmedLine, clases: [] };
+          }
+        }
+
+        // Asegurarse de agregar el último módulo si está abierto
+        if (currentModule) {
+          modules.push(currentModule);
+        }
+        course.modules = modules
+
+      
+        currentLine = currentLine +10
+        currentLine = await this.addFormattedTable(course, currentLine, pdf,false);
+
+        // currentLine = this._addFormatedTextP21({
+        //   text: course.descripcion,
+        //   course: course,
+        //   x: 0,
+        //   y:currentLine + 8,
+        //   color: 'black',
+        //   bold: false,
+        //   size: 10,
+        //   textAlign: "left",
+        //   maxLineWidth: this.pageWidth - 20,
+        //   firstLineMaxWidth: this.pageWidth - 95,
+        //   lineSpacingFactor: 1
+        // }, pdf);
         
       }
 
