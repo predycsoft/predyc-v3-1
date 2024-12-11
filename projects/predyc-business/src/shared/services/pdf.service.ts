@@ -302,16 +302,17 @@ export class PDFService {
 
     const hasShowDetailsTrue = modulo.clases.filter(course => (course.showDetails )).length > 1;
     let courseTitle = `${modulo.titulo}`;
-
+    let useCustomDuration = false
+    let duracionCustom = 0
     if(hasShowDetailsTrue){
       courseTitle = `${course.titulo}`;
     }
     else{
-      let duracion = 0
       modulo.clases.forEach(clase => {
-        duracion+=clase.duracion
+        duracionCustom+=clase.duracion
       });
-      course.duracion = duracion
+      useCustomDuration = true
+      // course.duracion = duracion
     }
 
   
@@ -362,7 +363,7 @@ export class PDFService {
   
     pdf.setFontSize(17);
   
-    let duracionCurso = this.getFormattedDuration(course.duracion * 60);
+    let duracionCurso = this.getFormattedDuration(!useCustomDuration?course.duracion:duracionCustom * 60);
     
   
     pdf.addImage(this.reloj, 'png', 57.69, 45.02, 6, 6, '', 'SLOW');
