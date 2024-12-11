@@ -63,6 +63,7 @@ import { LogsListComponent } from './admin-pages/logs/logs-list/logs-list.compon
 import { DialogComponentLogsDetailComponent } from './admin-pages/logs/dialog-component-logs-detail/dialog-component-logs-detail.component';
 import { CreateProgramP21Component } from '../shared/components/courses-p21/create-program-p21/create-program-p21.component';
 import { RevistaComponent } from "./admin-pages/profiles/revista.component";
+import { RevistasListComponent } from "./admin-pages/articles/article/revistas-list/revistas-list.component";
 
 
 @NgModule({
@@ -128,6 +129,7 @@ import { RevistaComponent } from "./admin-pages/profiles/revista.component";
     LogsListComponent,
     DialogComponentLogsDetailComponent,
     RevistaComponent,
+    RevistasListComponent
   ],
   imports: [SharedModule, CommonModule, AdminRoutingModule],
 })

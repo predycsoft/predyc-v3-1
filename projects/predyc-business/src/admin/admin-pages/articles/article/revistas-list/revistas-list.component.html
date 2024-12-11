@@ -1,0 +1,149 @@
+<div class="mgt10">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="name" class="w-30">
+        <th mat-header-cell *matHeaderCellDef class="ft14">Nombre</th>
+        <td mat-cell *matCellDef="let revista" class="">
+          <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign=" center" (click)="goToArticlesFilteredByAuthor(revista.id)" class="cursorPointer">
+            <img [src]="revista.imagen ? revista.imagen : 'assets/images/default/default-user-image.jpg'" class="radius6" style="height: 40px" alt="" />
+            <div fxLayout="column" fxLayoutAlign="center " class="move-right">
+              <div class="ft500 ft14 gray-10 cursorPointer">{{ revista.name }}</div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+  
+      <!-- <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Email</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14">
+          {{ revista.email }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="articlesQty">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Cant. Artículos</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14">
+          {{ revista.articlesQty }}
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="linkedin">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Linkedin</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14">
+          {{ revista.linkedin }}
+        </td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="editor">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Editor</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14">
+          {{ revista.editor }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cantidadArticulos">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Can. Artículos</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14">
+          {{ revista.coursesRef.length }}
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Acciones</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14 cursorPointer">
+          <mat-menu #menu="matMenu" class="containerMenu" style="padding: 20px !important;">
+            <div fxLayout="column" fxLayoutGap="" fxLayoutAlign="center center">
+              <span [routerLink]="['/admin/revista', revista.id]" class="menuItem pdr10 pdl10 h36px" >Detalles</span>
+              <!-- <span class="menuItem pdr10 pdl10 h36px" (click)="deleteAuthor(revista.id)">Eliminar</span> -->
+            </div>
+          </mat-menu>
+          <div fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+            <mat-icon class="iconButton centerText" [matMenuTriggerFor]="menu">more_horiz</mat-icon>
+          </div>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <ng-container>
+        <tr mat-row *matRowDef="let revista; columns: displayedColumns" class="">
+        </tr>
+      </ng-container>
+  
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="10">Aún no existe ningún autor.</td>
+      </tr>
+    </table>
+  
+    <mat-paginator aria-label="Select page of authors" [pageSize]="pageSize" [length]="totalLength" (page)="onPageChange($event.pageIndex + 1)"></mat-paginator>
+  </div>
+
+<ng-template #createAuthorModal let-modal>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="modal-header bg-web-primary text-white px-3 py-1">
+        <div class="modal-title pd10" fxLayout="row" fxLayoutAlign="start center">
+        <span class="ft16 ft500 gray-10">Crear Autor</span>
+        </div>
+        <img style="cursor: pointer;" [src]="icon.close" (click)="modal.dismiss('Cross click')" class="h20px" alt="">
+    </div>
+    <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+        <form [formGroup]="authorForm" class="mgr20">
+            <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="1rem">
+            <div class="form-group">
+                <label>Nombre del autor</label>
+                <input formControlName="name" [class.is-invalid]="authorForm.controls['name'].errors && showFormError" type="text" class="form-control " placeholder="Escriba el nombre del autor">
+                <div class="invalid-feedback" *ngIf="authorForm.controls['name'].errors && showFormError"> 
+                    Debe indicar el nombre.
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Correo del autor</label>
+                <input formControlName="email" [class.is-invalid]="authorForm.controls['email'].errors && showFormError" type="text" class="form-control " placeholder="Escriba el correo del autor">
+                <div class="invalid-feedback" *ngIf="authorForm.controls['email'].errors?.required && showFormError"> 
+                    Debe indicar el correo del autor.
+                </div>
+                <div class="invalid-feedback" *ngIf="authorForm.controls['email'].errors?.email && showFormError"> 
+                    El correo es invalido.
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Linkedin</label>
+                <input formControlName="linkedin" [class.is-invalid]="authorForm.controls['linkedin'].errors && showFormError" type="text" class="form-control " placeholder="Escriba el linkedin del autor">
+                <div class="invalid-feedback" *ngIf="authorForm.controls['linkedin'].errors && showFormError"> 
+                    Debe indicar el linkedin.
+                </div>
+            </div>
+            <div class="form-group">
+            <label>Descripción</label>
+                <div class="">
+                <textarea [class.is-invalid]="authorForm.controls['description'].errors && showFormError" formControlName="description" type="text" maxlength="200"
+                class="form-control" style="overflow-y: hidden;  width: 100%; height: 100px; resize:none; background-color: transparent !important;"></textarea>  
+                </div>
+                <div class="invalid-feedback" *ngIf="authorForm.controls['description'].errors && showFormError"> 
+                Debe indicar la descripción.
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Foto del autor</label>
+                <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center">
+                    <button (click)="authorImage.click()" class="grayButton pd03 radius4 ft12 h28px mgr10 gray-8" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                        <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                        Adjuntar imagen
+                    </button>
+                    <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png" />
+                    <div class="avatar-scroll">
+                        <img *ngIf="authorForm.get('photoUrl').value" [src]="authorForm.get('photoUrl').value" alt="Imagen seleccionada" class="image shadow8">
+                    </div>
+                </div>
+                <div *ngIf="authorForm.controls['photoUrl'].errors && showFormError" class="invalid-feedback" style="display: block !important;">
+                    Debe adjuntar la imagen.
+                </div>
+            </div>
+            </div>
+        </form>
+        <div fxLayout="row" fxLayoutAlign="end" class="mgt10">
+            <button *ngIf="!savingAuthor" (click)="createAuthor()" class="blueButton radius4 ft12 h28px mgr10 gray-1" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center">
+                <img [src]="icon.save" class="h16px pdr05 makeWhite" alt="">
+                Guardar autor
+            </button>
+        </div>
+    </div>
+</ng-template>

@@ -7,7 +7,7 @@
   >
     <app-navigate-back
       *ngIf="!isEditing"
-      targetUrl="/management/profiles"
+      targetUrl="/admin/articles"
       class="pdt10"
     >
       {{ isEditing ? "" : profileName }}
@@ -259,10 +259,10 @@
             <label class="ft12 pdb05 "  >Foto del editor</label>
             <div fxLayout="row" fxLayoutAlign="start end" >
               <!-- <button class="add-button">Adjuntar nueva</button> -->
-              <input (change)="uploadCourseImage($event,'editor')" #cursoImage type="file" hidden accept="image/jpeg, image/png" />
+              <input (change)="uploadCourseImage($event,'editor')" #cursoImage type="file" hidden accept="image/jpeg, image/png , image/webp" />
               <div>
                   <!-- {{formNewRevista.get('imagen').value}} -->
-                  <img *ngIf="formNewRevista.get('imagenEditor').value" [src]="formNewRevista.get('imagenEditor').value" alt="Imagen seleccionada" class="radius6 mgb05" style="width: 250px !important;">
+                  <img *ngIf="formNewRevista.get('imagenEditor').value" [src]="formNewRevista.get('imagenEditor').value" alt="Imagen seleccionada" class="avatar3 mgb05">
               </div>
             </div>
             <div *ngIf="isEditing" class="fw" >
@@ -287,7 +287,7 @@
           <label class="ft12 pdb05 "  >Foto del la revista</label>
           <div fxLayout="row" fxLayoutAlign="start end" >
             <!-- <button class="add-button">Adjuntar nueva</button> -->
-            <input (change)="uploadCourseImage($event)" #cursoImage type="file" hidden accept="image/jpeg, image/png" />
+            <input (change)="uploadCourseImage($event)" #cursoImage type="file" hidden accept="image/jpeg, image/png,  image/webp" />
             <!-- <div class="image-scroll">
                 <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
             </div> -->

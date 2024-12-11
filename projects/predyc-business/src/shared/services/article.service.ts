@@ -372,6 +372,7 @@ export class ArticleService {
   getAllArticleTags$() {
     return this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges()
   }
+  
 
   getArticleTagsByIds$(tagsIds: string[]): Observable<ArticleTagJson[]> {
     if (!tagsIds || tagsIds.length === 0) {
@@ -435,6 +436,10 @@ export class ArticleService {
     return await firstValueFrom(
       this.afs.collection<any>('revistaP21').doc(revistaId).valueChanges()
     );
+  }
+
+  getAllRevistas$() {
+    return this.afs.collection<any>('revistaP21').valueChanges()
   }
   
   async saveRevista(revistaP21) {
