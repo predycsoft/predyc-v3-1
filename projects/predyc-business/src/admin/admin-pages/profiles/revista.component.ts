@@ -10,6 +10,7 @@ import {
   BehaviorSubject,
   take,
   firstValueFrom,
+  finalize,
 } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -35,6 +36,7 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import Swal from 'sweetalert2';
 import { PDFService } from "projects/predyc-business/src/shared/services/pdf.service";
 import { InstructorsService } from "projects/predyc-business/src/shared/services/instructors.service";
+import { AngularFireStorage } from "@angular/fire/compat/storage";
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -53,18 +55,13 @@ export class RevistaComponent {
   constructor(
     private route: ActivatedRoute,
     private alertService: AlertsService,
-    private categoryService: CategoryService,
     private courseService: CourseService,
-    private enterpriseService: EnterpriseService,
     public icon: IconService,
-    private profileService: ProfileService,
-    private skillService: SkillService,
     private router: Router,
-    private userService: UserService,
     private titleService: Title,
     private authService: AuthService,
     private afs: AngularFirestore,
-    private instructorsService:InstructorsService,
+    private storage: AngularFireStorage,
     private pdfService: PDFService
   ) {}
 
@@ -186,6 +183,81 @@ export class RevistaComponent {
 
 
   }
+
+  fileNameImgCurso
+  uploadingImgCurso = false;
+  uploadProgress$: Observable<number>;
+  uploading_file_progressImgCurso
+
+
+  uploadCourseImage(event) {
+    if (!event.target.files[0] || event.target.files[0].length === 0) {
+      Swal.fire({
+        title: "Borrado!",
+        text: `Debe seleccionar una imagen`,
+        icon: "warning",
+        confirmButtonColor: "var(--blue-5)",
+      });
+      return;
+    }
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (_event) => {
+      //this.deleteQuestionImage(pregunta);
+
+      if (file) {
+        this.uploadingImgCurso = true;
+
+        let fileBaseName = file.name.split(".").slice(0, -1).join(".");
+        let fileExtension = file.name.split(".").pop();
+
+        let nombre = fileBaseName + "." + fileExtension;
+        this.fileNameImgCurso = nombre;
+
+        //console.log(nombre)
+
+        // Reorganizar el nombre para que el timestamp esté antes de la extensión
+        let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+
+        let nombreCurso = this.profileName ? this.profileName : "Temporal";
+        let filePath;
+
+        filePath = `RevistasP21/${nombreCurso}/Imagen/${newName}`;
+
+
+        const task = this.storage.upload(filePath, file);
+
+        // Crea una referencia a la ruta del archivo.
+        const fileRef = this.storage.ref(filePath);
+
+        // Obtener el progreso como un Observable
+        this.uploadProgress$ = task.percentageChanges();
+
+        // Suscríbete al Observable para actualizar tu componente de barra de progreso
+        this.uploadProgress$.subscribe((progress) => {
+          //console.log(progress);
+          this.uploading_file_progressImgCurso = Math.floor(progress);
+        });
+
+        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+        task
+          .snapshotChanges()
+          .pipe(
+            finalize(() => {
+              // Obtén la URL de descarga del archivo.
+              fileRef.getDownloadURL().subscribe((url) => {
+                this.uploadingImgCurso = false;
+                this.formNewRevista.get("imagen").patchValue(url);
+              });
+            })
+          )
+          .subscribe();
+      }
+    };
+  }
+
 
   removeAccents(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
