@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { Chart } from "chart.js";
 import {
   Observable,
@@ -100,6 +100,42 @@ export class RevistaComponent {
   instrcutores
   courses
 
+  formNewRevista: FormGroup;
+
+
+  metaDescriptionMaxLength = 141
+  keyWordsMaxLength = 100
+
+  async inicializarformNewRevista() {
+    if (this.id == "new") {
+
+      this.formNewRevista = new FormGroup({
+
+        customUrl: new FormControl(''), 
+        metaDescripcion:new FormControl(null), 
+        KeyWords: new FormControl(null), 
+        imagen:new FormControl(null), 
+
+      })
+    }
+    else{
+
+      this.formNewRevista = new FormGroup({
+
+        customUrl: new FormControl(this.profile['customUrl']), 
+        metaDescripcion:new FormControl(this.profile['metaDescripcion']), 
+        KeyWords: new FormControl(this.profile['KeyWords']), 
+        imagen:new FormControl(null), 
+        
+      })
+    }
+
+  
+
+
+  }
+
+
   async ngOnInit() {
 
     this.authService.user$.subscribe((user) => {
@@ -114,6 +150,8 @@ export class RevistaComponent {
       this.isEditing = false;
     }
 
+    this.inicializarformNewRevista()
+
     this.coursesForExplorer = await this.courseService.getArticulosRevista() as any[]
 
     console.log('coursesForExplorer',this.coursesForExplorer)
@@ -122,20 +160,23 @@ export class RevistaComponent {
       this.searchControl.valueChanges.pipe(startWith(""))]).pipe(
       map(([searchText]) => {
         // Si no hay texto de búsqueda ni categoría seleccionada, devolver todo
-        if (!searchText) return [];
     
         // Obtener los cursos disponibles
         let filteredCourses = this.coursesForExplorer;
+
+        if (!searchText) return filteredCourses;
+
     
         // Filtrar por categoría si existe
     
         // Filtrar por texto de búsqueda si existe
         if (searchText) {
-          alert('aqui')
           const filterValue = this.removeAccents(searchText.toLowerCase());
+          console.log('filterValue',filterValue)
           filteredCourses = filteredCourses.filter((course) =>
             this.removeAccents(course['title'].toLowerCase()).includes(filterValue)
           );
+          console.log('filteredCourses',filteredCourses)
         }
     
         return filteredCourses;
@@ -247,6 +288,8 @@ export class RevistaComponent {
   }
 
 
+  showErrorCurso
+
 
   disableSaveButton: boolean = false;
 
@@ -254,21 +297,6 @@ export class RevistaComponent {
     try {
       if (!this.profileName)
         throw new Error("Debe indicar un nombre para el perfil");
-
-      if (
-        this.profiles.find(
-          (x) =>
-            x.name.toLowerCase() == this.profileName.toLowerCase() &&
-            x.id != this.profile?.id &&
-            this.profile?.baseProfile.id != x.id
-        )
-      )
-        throw new Error("El nombre del perfil se encuentra en uso");
-
-      this.disableSaveButton = true;
-      this.alertService.infoAlert(
-        "Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación"
-      );
 
       Swal.fire({
         title: 'Editando plan de estudio...',
@@ -283,7 +311,7 @@ export class RevistaComponent {
         studyPlanOrder: number;
       }[] = this.studyPlan.map((course) => {
         return {
-          courseRef: this.courseService.getCourseRefById(course.id),
+          courseRef: this.courseService.getArticleRefById(course.id),
           studyPlanOrder: course.studyPlanOrder,
         };
       });
@@ -295,85 +323,20 @@ export class RevistaComponent {
         throw new Error("Debe indicar los cursos del plan de estudio");
       }
       
-
-      let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-      if (this.user.isSystemUser) {
-        enterpriseRef = null;
-      }
-      let baseProfile = null;
-      if (this.baseProfile) {
-        baseProfile = this.afs
-          .collection<Profile>(Profile.collection)
-          .doc(this.baseProfile).ref;
-      }
-
-      const profile: Profile = Profile.fromJson({
+      const profile = {
         id: this.profile ? this.profile.id : null,
         name: this.profileName,
         description: this.profileDescription,
         coursesRef: coursesRef,
-        baseProfile: this.profile?.baseProfile
-          ? this.profile?.baseProfile
-          : baseProfile,
-        enterpriseRef: enterpriseRef,
-        permissions: this.profile ? this.profile.permissions : null,
-        hoursPerMonth: this.profileHoursPerMonth,
-      });
+      };
 
       console.log('profile save',profile)
-      const changesInStudyPlan = {
-        added: [],
-        removed: [],
-        studyPlan: this.studyPlan,
-        profileId: this.profile?.id ? this.profile?.id : null,
-      };
-      if (this?.id !== "new") {
-        this.coursesForExplorer.forEach((course) => {
-          const studyPlanItem = this.studyPlan.find(
-            (item) => item.id === course.id
-          );
-          const isInStudyPlan = studyPlanItem?.id ? true : false;
-          const studyPlanItemBackup = this.profileBackup.selectedCourses.find(
-            (item) => item.courseId === course.id
-          );
-          const wasInStudyPlan = studyPlanItemBackup?.courseId ? true : false;
-          if (isInStudyPlan !== wasInStudyPlan) {
-            // Study Plan changed
-            if (isInStudyPlan) {
-              changesInStudyPlan.added.push({
-                id: course.id,
-                studyPlanOrder: studyPlanItem.studyPlanOrder,
-              });
-            } else {
-              changesInStudyPlan.removed.push({
-                id: course.id,
-              });
-            }
-          }
-        });
 
-        const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan,this.profileHoursPerMonth);
-        if (studyPlanHasBeenUpdated)
-          await this.profileService.saveProfile(profile);
-        else{
-          Swal.close();
-          throw new Error(
-            "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
-          );
-        }
-
-      } else {
-        console.log("profile", profile);
-        const profileId = await this.profileService.saveProfile(profile);
-        this.id = profileId;
-        this.profile = profile;
-        this.router.navigate([`management/profiles/${profileId}`]);
-        this.titleService.setTitle(MAIN_TITLE + this.profile.name);
-      }
-      Swal.close();
+     
       this.alertService.succesAlert("Completado");
       this.disableSaveButton = false;
       this.isEditing = false;
+      Swal.close();
     } catch (error) {
       Swal.close();
       console.error(error);

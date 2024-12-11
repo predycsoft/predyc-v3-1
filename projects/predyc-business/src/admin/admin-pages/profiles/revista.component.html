@@ -38,7 +38,7 @@
           (click)="onSave()"
           [disabled]="disableSaveButton"
         >
-          {{ id === "new" ? "Agregar perfil" : "Guardar perfil" }}
+          {{ id === "new" ? "Agregar Revista" : "Guardar Revista" }}
           <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="" />
         </button>
       </div>
@@ -83,7 +83,9 @@
           <span class="ft500 ft14 black">Detalles de la revista</span>
         </div>
 
-        <div class="mgt15 radius20" *ngIf="isEditing">
+
+
+        <div class="mgt15 mgb10 radius20" *ngIf="isEditing">
           <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
 
           <div
@@ -130,6 +132,68 @@
           </p>
         </div>
 
+        <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  <mat-panel-title>
+                      Meta datos
+                  </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <form [formGroup]="formNewRevista" >
+
+                <div *ngIf="user?.isSystemUser" class="form-group mgt08">
+                  <label class="ft12">URL personalizado</label>
+                  <div class="input-group">
+                      <input
+                      [class.is-invalid]="formNewRevista.controls['customUrl'].errors && showErrorCurso"
+                      formControlName="customUrl"
+                      type="text"
+                      class="form-control customInput2 radius6"
+                      placeholder="Escriba el URL del curso aquí"
+                      >
+                      <div class="input-group-append">
+                          <span class="input-group-text">{{ formNewRevista?.controls['customUrl']?.value?.length || 0 }}</span>
+                      </div>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="formNewRevista?.controls['customUrl']?.errors && showErrorCurso">
+                      Debe indicar el URL del curso
+                  </div>
+                </div>
+        
+                <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
+                    <label>Meta descripción del curso</label>
+                    <textarea [class.is-invalid]="formNewRevista.controls['metaDescripcion'].errors && showErrorCurso" rows="3"
+                              formControlName="metaDescripcion" type="text" class="form-control ft12 customInput2"
+                              [maxLength]="metaDescriptionMaxLength"
+                              placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                    <div class="progress-bar-container fw mgt03">
+                        <div class="progress-bar" [style.width.%]="(formNewRevista?.controls['metaDescripcion']?.value?.length / metaDescriptionMaxLength) * 100"></div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="formNewRevista.controls['metaDescripcion'].errors && showErrorCurso"> 
+                        Debe indicar la meta descripción del curso
+                    </div>
+                </div>
+        
+                <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
+                    <label>KeyWords</label>
+                    <textarea [class.is-invalid]="formNewRevista.controls['KeyWords'].errors && showErrorCurso" [maxLength]="keyWordsMaxLength"
+                              rows="3" formControlName="KeyWords" type="text" class="form-control ft12 customInput2"
+                              placeholder="Escriba los KeyWords del curso aquí" style="resize: none;"></textarea>
+                    <div class="progress-bar-container fw mgt03">
+                        <div class="progress-bar" [style.width.%]="(formNewRevista?.controls['KeyWords']?.value?.length / keyWordsMaxLength) * 100"></div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="formNewRevista.controls['KeyWords'].errors && showErrorCurso"> 
+                        Debe indicar los KeyWords del curso
+                    </div>
+                </div>
+              </form>
+
+
+      
+          </mat-expansion-panel>
+        </mat-accordion>
+
         <div
           class="pd05 mgt10 radius10 backWhite shadow-animation"
           *ngIf="isEditing"
@@ -152,6 +216,26 @@
             maxlength="170"
           ></textarea>
         </div>
+
+        <div class="form-group pdt10">
+          <label class="ft12 pdb05 "  >Foto del la revista</label>
+          <div fxLayout="row" fxLayoutAlign="start end" >
+                  <!-- <button class="add-button">Adjuntar nueva</button> -->
+                  <input #cursoImage type="file" hidden accept="image/jpeg, image/png" />
+                  <!-- <div class="image-scroll">
+                      <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
+                  </div> -->
+                  <div>
+                      <img *ngIf="formNewRevista.get('imagen').value" [src]="formNewRevista.get('imagen').value" alt="Imagen seleccionada" class="avatarSquare8 radius6">
+                  </div>
+                  <div *ngIf="isEditing" class="fw" >
+                      <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+                          <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                          Adjuntar imagen
+                      </button>
+                  </div>
+          </div>
+      </div>
 
       </div>
 
@@ -241,26 +325,13 @@
                       fxLayoutGap="10px"
                     >
                       <img
-                        [src]="course.imagen"
-                        [alt]="course.titulo"
+                        [src]="course['photoUrl']"
+                        [alt]="course['title']"
                         class="w40px h40px radius4"
                       />
                       <div fxLayout="column" fxLayoutGap="5px">
                         <div class="title-course-badge">
-                          {{ course.titulo | titlecase }}
-                        </div>
-                        <div class="skills-container">
-                          <div
-                            *ngFor="let skill of course.skills"
-                            style="
-                              display: inline-block;
-                              margin-right: 5px;
-                              margin-bottom: 5px;
-                            "
-                            class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
-                          >
-                            {{ skill.name }}
-                          </div>
+                          {{ course['title'] | titlecase }}
                         </div>
                       </div>
                     </div>
@@ -393,7 +464,7 @@
                       alt=""
                       class="pdr05"
                     />
-                    {{ item.titulo }}
+                    {{ item.title }}
                   </span>
                   <!-- <span>Orden: {{ item.studyPlanOrder }}</span> -->
                 </div>
@@ -403,9 +474,6 @@
                   fxLayoutGap="0.5rem"
                   style="margin-left: 5px"
                 >
-                  <span class="gray-10 ft11 nowrap"
-                    >{{ roundNumber(item.duracion / 60) }} hrs</span
-                  >
                   <img
                     [src]="icon.trash"
                     class="h14px makeGray cursorPointer"
@@ -439,7 +507,7 @@
             >
               <div fxLayout="column" fxLayoutGap="5px" class="ft11">
                 <span class="ft12 gray-10">
-                  {{ item.titulo }}
+                  {{ item.title }}
                 </span>
               </div>
               <div
@@ -448,9 +516,6 @@
                 fxLayoutGap="0.5rem"
                 style="margin-left: 5px"
               >
-                <span class="gray-10 ft11 nowrap">
-                  {{ roundNumber(item.duracion / 60) }} hrs
-                </span>
                 <img
                   *ngIf="isEditing"
                   [src]="icon.trash"
