@@ -2843,7 +2843,7 @@ export class PDFService {
                 color: 'black',
                 bold: isCalendar?true:false,
                 textAlign: "left",
-                maxLineWidth:isPillar?(this.pageWidth - 30):null
+                maxLineWidth:isPillar?(this.pageWidth - 30):this.pageWidth - 20
               }, pdf);
               
               console.log(clase)
