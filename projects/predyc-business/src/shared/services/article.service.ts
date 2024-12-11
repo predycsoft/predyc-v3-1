@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Article, ArticleCategory, ArticleCategoryJson, ArticleJson, ArticleTag, ArticleTagJson } from 'projects/shared/models/article.model';
-import { Observable, combineLatest, finalize, map, of } from 'rxjs';
+import { Observable, combineLatest, finalize, firstValueFrom, map, of } from 'rxjs';
 import { ArticleData } from '../../admin/admin-pages/articles/articles.component';
 import { AngularFireStorage } from "@angular/fire/compat/storage";
 
@@ -421,5 +421,39 @@ export class ArticleService {
 
   getArticleCategoryRefById(categoryId: string): DocumentReference<ArticleCategory> {
     return this.afs.collection<ArticleCategory>(ArticleCategory.collection).doc(categoryId).ref
+  }
+
+
+  async getArticulosRevista(): Promise<any[]> {
+    return await firstValueFrom(
+      this.afs.collection<any>(Article.collection, ref => 
+        ref.where('type', '==', 'Revista')
+      ).valueChanges()
+    );
+  }
+  async getRevistaById(revistaId: string): Promise<any> {
+    return await firstValueFrom(
+      this.afs.collection<any>('revistaP21').doc(revistaId).valueChanges()
+    );
+  }
+  
+  async saveRevista(revistaP21) {
+    try {
+      //console.log('certificate add',certificate)
+      let ref
+      if(revistaP21.id){
+        ref = this.afs.collection<any>('revistaP21').doc(revistaP21.id).ref;
+      }
+      else{
+        ref = this.afs.collection<any>('revistaP21').doc().ref;
+      }
+      await ref.set({...revistaP21, id: ref.id}, { merge: true });
+      revistaP21.id = ref.id;
+      console.log('revistaSave',revistaP21,ref.id)
+      return revistaP21
+    } catch (error) {
+      //console.log(error)
+    }
+
   }
 }

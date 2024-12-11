@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Chart } from "chart.js";
 import {
   Observable,
@@ -37,6 +37,7 @@ import Swal from 'sweetalert2';
 import { PDFService } from "projects/predyc-business/src/shared/services/pdf.service";
 import { InstructorsService } from "projects/predyc-business/src/shared/services/instructors.service";
 import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -62,7 +63,8 @@ export class RevistaComponent {
     private authService: AuthService,
     private afs: AngularFirestore,
     private storage: AngularFireStorage,
-    private pdfService: PDFService
+    private pdfService: PDFService,
+    private articleService:ArticleService,
   ) {}
 
   isEditing: boolean;
@@ -75,7 +77,7 @@ export class RevistaComponent {
   categories: Category[];
   // courses: Curso[]
   skills: Skill[];
-  profile: ProfileJson;
+  profile: any;
 
   coursesForExplorer: CoursesForExplorer[];
   filteredCourses: Observable<CoursesForExplorer[]>;
@@ -111,7 +113,13 @@ export class RevistaComponent {
         customUrl: new FormControl(''), 
         metaDescripcion:new FormControl(null), 
         KeyWords: new FormControl(null), 
-        imagen:new FormControl(null), 
+        imagen:new FormControl(null,[ Validators.required]), 
+        fecha:new FormControl(null), 
+        editor:new FormControl(null), 
+
+        resumenEditor:new FormControl(null), 
+        imagenEditor:new FormControl(null), 
+
 
       })
     }
@@ -122,9 +130,20 @@ export class RevistaComponent {
         customUrl: new FormControl(this.profile['customUrl']), 
         metaDescripcion:new FormControl(this.profile['metaDescripcion']), 
         KeyWords: new FormControl(this.profile['KeyWords']), 
-        imagen:new FormControl(null), 
+        imagen:new FormControl(this.profile['imagen'],[ Validators.required]), 
+        fecha:new FormControl(this.profile?.fecha), 
+        editor:new FormControl(this.profile?.editor), 
+
+        resumenEditor:new FormControl(this.profile?.resumenEditor), 
+        imagenEditor:new FormControl(this.profile?.imagenEditor), 
+
+
+
         
       })
+
+      this.profileDescription = this.profile.description
+      this.profileName = this.profile.name
     }
 
   
@@ -144,14 +163,38 @@ export class RevistaComponent {
       const title = MAIN_TITLE + "Nueva revista P21";
       this.titleService.setTitle(title);
     } else {
+      this.profile = await this.articleService.getRevistaById(this.id)
       this.isEditing = false;
     }
 
     this.inicializarformNewRevista()
 
-    this.coursesForExplorer = await this.courseService.getArticulosRevista() as any[]
+    const cursos = await this.articleService.getArticulosRevista() as any[]
 
     console.log('coursesForExplorer',this.coursesForExplorer)
+
+    this.coursesForExplorer = cursos.map(course => {
+
+      const studyPlanItemCourseRefItem = this.profile
+      ? this.profile.coursesRef.find((x: any) => {
+          return x.courseRef.id === course.id;
+        })
+      : null;
+      const inStudyPlan = studyPlanItemCourseRefItem ? true : false;
+      const courseForExplorer = {
+        ...course,
+        inStudyPlan: inStudyPlan,
+        studyPlanOrder: studyPlanItemCourseRefItem
+          ? studyPlanItemCourseRefItem.studyPlanOrder
+          : null,
+      };
+      // console.log('courseForExplorer',courseForExplorer)
+      if (inStudyPlan) this.studyPlan.push(courseForExplorer);
+      return courseForExplorer;
+    });
+
+    this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
+
 
     this.filteredCourses = combineLatest([
       this.searchControl.valueChanges.pipe(startWith(""))]).pipe(
@@ -190,7 +233,7 @@ export class RevistaComponent {
   uploading_file_progressImgCurso
 
 
-  uploadCourseImage(event) {
+  uploadCourseImage(event,type = 'revista') {
     if (!event.target.files[0] || event.target.files[0].length === 0) {
       Swal.fire({
         title: "Borrado!",
@@ -249,7 +292,13 @@ export class RevistaComponent {
               // Obtén la URL de descarga del archivo.
               fileRef.getDownloadURL().subscribe((url) => {
                 this.uploadingImgCurso = false;
-                this.formNewRevista.get("imagen").patchValue(url);
+                if(type == 'revista'){
+                  this.formNewRevista.get("imagen").patchValue(url);
+                }
+                else if (type == 'editor'){
+                  this.formNewRevista.get("imagenEditor").patchValue(url);
+
+                }
               });
             })
           )
@@ -328,7 +377,7 @@ export class RevistaComponent {
 
   onCancel() {
     if (this.id === "new") {
-      this.router.navigate(["/management/profiles"]);
+      this.router.navigate(["/admin/articles"]);
     } else {
       this.profileName = this.profileBackup.name;
       this.profileDescription = this.profileBackup.description;
@@ -366,9 +415,21 @@ export class RevistaComponent {
   disableSaveButton: boolean = false;
 
   async onSave() {
+    this.showErrorCurso = false
+
     try {
-      if (!this.profileName)
-        throw new Error("Debe indicar un nombre para el perfil");
+      if (!this.profileName){
+        throw new Error("Debe indicar un nombre para la revista");
+      }
+
+      if(this.formNewRevista.invalid){
+        this.showErrorCurso = true
+        throw new Error("Datos Faltantes");
+      }
+
+      if(this.studyPlan.length == 0){
+        throw new Error("Debe indicar los artículos de la revisa");
+      }
 
       Swal.fire({
         title: 'Editando plan de estudio...',
@@ -383,7 +444,7 @@ export class RevistaComponent {
         studyPlanOrder: number;
       }[] = this.studyPlan.map((course) => {
         return {
-          courseRef: this.courseService.getArticleRefById(course.id),
+          courseRef: this.articleService.getArticleRefById(course.id) as any,
           studyPlanOrder: course.studyPlanOrder,
         };
       });
@@ -392,23 +453,32 @@ export class RevistaComponent {
 
       if (!coursesRef || coursesRef.length == 0){
         Swal.close();
-        throw new Error("Debe indicar los cursos del plan de estudio");
+        throw new Error("Debe indicar los artículos de la revisa");
       }
       
-      const profile = {
+      let profile = {
+        ...this.formNewRevista.value,
         id: this.profile ? this.profile.id : null,
         name: this.profileName,
         description: this.profileDescription,
         coursesRef: coursesRef,
+        editDate:new Date(),
+        createDate:this.profile?.createDate?this.profile.createDate:new Date()
       };
 
       console.log('profile save',profile)
 
+      await this.articleService.saveRevista(profile)
+      Swal.close();
      
       this.alertService.succesAlert("Completado");
       this.disableSaveButton = false;
       this.isEditing = false;
-      Swal.close();
+
+      this.router.navigate([`admin/revista/${profile.id}`]);
+      this.titleService.setTitle(MAIN_TITLE + profile.name);
+
+
     } catch (error) {
       Swal.close();
       console.error(error);

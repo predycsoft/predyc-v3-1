@@ -2256,18 +2256,7 @@ export class CourseService {
   }
 
 
-  async getArticulosRevista(): Promise<any[]> {
-    return await firstValueFrom(
-      this.afs.collection<any>(Article.collection, ref => 
-        ref.where('type', '==', 'Revista')
-      ).valueChanges()
-    );
-  }
 
-
-  public getArticleRefById(id: string): DocumentReference<Curso> {
-    return this.afs.collection<Curso>(Article.collection).doc(id).ref;
-  }
 
 
   
