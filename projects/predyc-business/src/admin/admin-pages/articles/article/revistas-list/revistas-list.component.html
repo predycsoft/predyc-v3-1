@@ -40,6 +40,13 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="borrador">
+        <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Borrador</th>
+        <td mat-cell *matCellDef="let revista" class="centertext ft14">
+          {{ revista.isDraft?'Si':'No' }}
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="cantidadArticulos">
         <th mat-header-cell *matHeaderCellDef class="ft14 centertext">Can. Artículos</th>
         <td mat-cell *matCellDef="let revista" class="centertext ft14">

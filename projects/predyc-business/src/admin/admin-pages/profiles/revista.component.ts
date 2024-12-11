@@ -144,12 +144,15 @@ export class RevistaComponent {
 
       this.profileDescription = this.profile.description
       this.profileName = this.profile.name
+      this.isDraft = this.profile.isDraft
     }
 
   
 
 
   }
+
+  isDraft = true
 
 
   async ngOnInit() {
@@ -463,6 +466,7 @@ export class RevistaComponent {
         description: this.profileDescription,
         coursesRef: coursesRef,
         editDate:new Date(),
+        isDraft:this.isDraft?this.isDraft:false,
         createDate:this.profile?.createDate?this.profile.createDate:new Date()
       };
 

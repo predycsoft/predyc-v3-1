@@ -21,6 +21,10 @@
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
         <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
         <div class="edit-button">Modo de edición</div>
+        <div *ngIf="isEditing" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="" class="">
+          <span style="color:white">Borrador:</span>
+          <mat-slide-toggle class="pdl03" color="primary" [(ngModel)]="isDraft"></mat-slide-toggle>
+      </div>
       </div>
       <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
         <div
@@ -83,7 +87,10 @@
           <span class="ft500 ft14 black">Detalles de la revista</span>
         </div>
 
-
+        <div *ngIf="!isEditing" class="mgl05 mgt10">
+          <span>Borrador {{isDraft?'Si':'No'}}</span>
+          
+        </div>
 
         <div class="mgt15 mgb10 radius20" *ngIf="isEditing">
           <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->

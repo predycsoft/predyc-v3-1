@@ -44,7 +44,7 @@ export class RevistasListComponent {
   editingAuthorId: string | null = null;  // To keep track if we are editing
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  displayedColumns: string[] = ["name","editor","cantidadArticulos", "actions"];
+  displayedColumns: string[] = ["name","editor","cantidadArticulos","borrador", "actions"];
   pageSize: number = 5;
   totalLength: number;
 
