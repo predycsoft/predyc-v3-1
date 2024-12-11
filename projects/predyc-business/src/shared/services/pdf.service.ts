@@ -530,19 +530,38 @@ export class PDFService {
     }
   
     pdf.setFontSize(18);
-    currentLine = this.addFormatedText({
-      text: courseTitle,
-      course: course,
-      x: 48,
-      y: -2,
-      color: 'white',
-      bold: true,
-      size: 18,
-      textAlign: "left",
-      maxLineWidth: this.pageWidth - 20,
-      firstLineMaxWidth: this.pageWidth - 95,
-      lineSpacingFactor: 0.8
-    }, pdf);
+
+    if(isPredyc){
+      currentLine = this.addFormatedText({
+        text: courseTitle,
+        course: course,
+        x: 48,
+        y: -2,
+        color: 'white',
+        bold: true,
+        size: 18,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 20,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+    }
+    else{
+      currentLine = this.addFormatedText({
+        text: courseTitle,
+        course: course,
+        x: 48,
+        y: -2,
+        color: 'white',
+        bold: true,
+        size: 16,
+        textAlign: "left",
+        maxLineWidth: this.pageWidth - 60,
+        firstLineMaxWidth: this.pageWidth - 95,
+        lineSpacingFactor: 0.8
+      }, pdf);
+    }
+
   
     const instructorSectionStartY = currentLine + 4;
     const instructorSectionEndY = 45.5;
