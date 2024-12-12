@@ -674,6 +674,8 @@ export class ArticleComponent {
           // const ratioRestriction = 6 / 9
           // const ratioRestriction = 16 / 15 // for 1920px x 1080px
           let ratioRestriction = 1920 / 1080 //1.7778
+          let ratioRestriction2 = 541 / 700 //1.7778
+
 
           if(this.type =='Revista'){
             ratioRestriction = 541 / 700 //1.7778
@@ -681,10 +683,10 @@ export class ArticleComponent {
           const tolerance = 0.01
           console.log("aspectRatio", aspectRatio)
           console.log("ratioRestriction", ratioRestriction)
-          if (Math.abs(aspectRatio - ratioRestriction) > tolerance) {
+          if ((Math.abs(aspectRatio - ratioRestriction) > tolerance) ||(Math.abs(aspectRatio - ratioRestriction2) > tolerance) ) {
             Swal.fire({
               title: "Error!",
-              text: `La imagen debe tener una proporción aproximada de ${this.type =='Revista'?'17:22':'16:15'}`,
+              text: `La imagen debe tener una proporción aproximada de ${this.type =='Revista'?'17:22':'16:9 o 17:22'}`,
               icon: "warning",
               confirmButtonColor: "var(--blue-5)",
             });

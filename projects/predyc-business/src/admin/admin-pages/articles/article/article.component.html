@@ -19,7 +19,8 @@
                 <select (change)="changePage()" [(ngModel)]="type" class="ft14 shadow-animation borderLight cursorPointer h28px" style="text-align: center;">
                     <option value="Predyc">Predyc</option>
                     <option value="Predictiva">Predictiva</option>
-                    <option value="Revista">Artículo Revista</option>
+                    <!-- <option value="Revista">Artículo Revista</option> -->
+                    <!-- <option value="RevistaP21">Artículo Revista</option> -->
                 </select>
             </div>
         </div>
@@ -295,7 +296,7 @@
         <div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center">
             <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFile">
             <div *ngIf="!previewImage" (click)="authorImage.click()" class="imageBanner radius10 backGray2 shadowLight" fxLayout="row" fxLayoutAlign="center center">
-                <span *ngIf="type!='Revista'">Recomendamos cargar una imagen de 1.920 x 1.080 pixeles</span>
+                <span *ngIf="type!='Revista'">Recomendamos cargar una imagen de 1.920 x 1.080 pixeles / 850 x 1.100 pixeles</span>
                 <span *ngIf="type=='Revista'">Recomendamos cargar una imagen de 850 x 1.100 pixeles</span>
 
             </div>

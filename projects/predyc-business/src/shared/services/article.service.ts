@@ -428,7 +428,7 @@ export class ArticleService {
   async getArticulosRevista(): Promise<any[]> {
     return await firstValueFrom(
       this.afs.collection<any>(Article.collection, ref => 
-        ref.where('type', '==', 'Revista')
+        ref.where('isFromPredyc', '==', false)
       ).valueChanges()
     );
   }
