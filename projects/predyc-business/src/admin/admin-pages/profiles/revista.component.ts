@@ -236,7 +236,7 @@ export class RevistaComponent {
   uploading_file_progressImgCurso
 
 
-  uploadCourseImage(event,type = 'revista') {
+  uploadCourseImage(event,type) {
     if (!event.target.files[0] || event.target.files[0].length === 0) {
       Swal.fire({
         title: "Borrado!",
@@ -300,7 +300,6 @@ export class RevistaComponent {
                 }
                 else if (type == 'editor'){
                   this.formNewRevista.get("imagenEditor").patchValue(url);
-
                 }
               });
             })

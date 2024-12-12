@@ -266,14 +266,14 @@
             <label class="ft12 pdb05 "  >Foto del editor</label>
             <div fxLayout="row" fxLayoutAlign="start end" >
               <!-- <button class="add-button">Adjuntar nueva</button> -->
-              <input (change)="uploadCourseImage($event,'editor')" #cursoImage type="file" hidden accept="image/jpeg, image/png , image/webp" />
+              <input (change)="uploadCourseImage($event,'editor')" #editorImage type="file" hidden accept="image/jpeg, image/png , image/webp" />
               <div>
                   <!-- {{formNewRevista.get('imagen').value}} -->
                   <img *ngIf="formNewRevista.get('imagenEditor').value" [src]="formNewRevista.get('imagenEditor').value" alt="Imagen seleccionada" class="avatar3 mgb05">
               </div>
             </div>
             <div *ngIf="isEditing" class="fw" >
-              <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+              <button (click)="editorImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
                   <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
                   Adjuntar imagen editor
               </button>
@@ -294,7 +294,7 @@
           <label class="ft12 pdb05 "  >Foto del la revista</label>
           <div fxLayout="row" fxLayoutAlign="start end" >
             <!-- <button class="add-button">Adjuntar nueva</button> -->
-            <input (change)="uploadCourseImage($event)" #cursoImage type="file" hidden accept="image/jpeg, image/png,  image/webp" />
+            <input (change)="uploadCourseImage($event,'revista')" #cursoImage type="file" hidden accept="image/jpeg, image/png,  image/webp" />
             <!-- <div class="image-scroll">
                 <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
             </div> -->
