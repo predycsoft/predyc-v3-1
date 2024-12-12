@@ -295,10 +295,12 @@
         <div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center">
             <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFile">
             <div *ngIf="!previewImage" (click)="authorImage.click()" class="imageBanner radius10 backGray2 shadowLight" fxLayout="row" fxLayoutAlign="center center">
-                <span>Recomendamos cargar una imagen de 1.920 x 1.080 pixeles</span>
+                <span *ngIf="type!='Revista'">Recomendamos cargar una imagen de 1.920 x 1.080 pixeles</span>
+                <span *ngIf="type=='Revista'">Recomendamos cargar una imagen de 850 x 1.100 pixeles</span>
+
             </div>
             <div *ngIf="previewImage" (click)="authorImage.click()" class="imageBanner">
-                <img [src]="previewImage" alt="Imagen seleccionada" class="fw fh radius10">
+                <img [src]="previewImage" alt="Imagen seleccionada" class="fw fh radius10" style=" object-fit: contain;">
             </div>
         </div>
     </div>
