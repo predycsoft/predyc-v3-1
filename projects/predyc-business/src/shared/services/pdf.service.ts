@@ -2206,7 +2206,7 @@ export class PDFService {
       currentLine = 25
 
 
-      currentLine = this._addFormatedText({
+      currentLine = this._addFormatedTextP21({
         text: diplomado.final,
         course: null,
         x: 0,
