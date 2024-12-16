@@ -633,16 +633,7 @@ export class CreateProgramP21Component {
               //console.log('activities clases', activities);
               this.activitiesCourse = activities;
               this.modulos.forEach((modulo) => {
-                // let instructoresForm = new FormControl("");
-                // let filteredinstructores: Observable<any[]>;
-                // filteredinstructores = instructoresForm.valueChanges.pipe(
-                //   startWith(""),
-                //   map((value) => this._filter(value || ""))
-                // );
-                // instructor =  this.instructores.find(x=>x.id == modulo['instructorData'].id)
-                // instructoresForm.patchValue(instructor);      
-                // modulo['instructoresForm'] = instructoresForm
-                // modulo['filteredinstructores'] = filteredinstructores
+
 
                 modulo['clases']?.forEach(clase => {
 
@@ -657,8 +648,10 @@ export class CreateProgramP21Component {
                       startWith(""),
                       map((value) => this._filter(value || ""))
                     );
-                    instructor =  this.instructores.find(x=>x.id == clase['instructorData'].id)
-                    instructoresFormClase.patchValue(instructor);      
+                    instructor =  this.instructores.find(x=>x.id == clase?.instructorData?.id)
+                    if(instructor){
+                      instructoresFormClase.patchValue(instructor);      
+                    }
                     clase['instructoresForm'] = instructoresFormClase
                     clase['filteredinstructores'] = filteredinstructoresClase
                   }                    
@@ -983,14 +976,6 @@ export class CreateProgramP21Component {
           this.curso.skillsRef = this.curso["skills"];
           delete this.curso["skills"];
         }
-
-        // let duracion = this.getDurationModuleCourse();
-        // this.curso.duracion = duracion;
-
-        //const instructorData = await this.instructorsService.fetchInstructorDataByIdPromise(this.curso.instructorRef.id)
-
-        //this.curso['instructorData'] = instructorData
-        //this.curso['pillarData'] = this.pillarsForm.value
         const pillarData= this.pillarsForm.value
 
         delete pillarData['competencias']
@@ -1079,13 +1064,11 @@ export class CreateProgramP21Component {
       let modulosToSave = []
       this.modulos.forEach(modulo => {
 
-        // modulo['fechaInicio'] = null
-        // modulo['duracion'] = null
-        //instructorData
-
         let clases = []
         modulo['clases'].forEach(clase => {
-          console.log('clasesToSave',clase)
+          // console.log('clasesToSave',clase.instructorData)
+          const instructor = this.instructores.find(x=>x.id == clase?.instructorData?.id)
+          console.log('instructor',instructor)
           let claseLocal = {
             id:clase.id,
             duracion:clase.duracion,
@@ -1093,7 +1076,7 @@ export class CreateProgramP21Component {
             tipo:clase.tipo,
             titulo:clase.titulo,
             imagen:clase?.imagen?clase.imagen:null,
-            instructorData:clase.instructorData,
+            instructorData:instructor?instructor:null,
             image:clase.image,
             fechaInicio:clase.fechaInicio?clase.fechaInicio:null,
             showDetails:clase.showDetails? clase.showDetails: null

@@ -7,18 +7,20 @@
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="1rem" fxFlex="60%">
             <div (click)="tab = 1" [ngClass]="{'active-tab': tab === 1, 'inactive-tab': tab !== 1}" class="tab fh">Datos</div>
             <div (click)="tab = 2" [ngClass]="{'active-tab': tab === 2, 'inactive-tab': tab !== 2}" class="tab fh">Contenido</div>
-            <div (click)="tab = 3" [ngClass]="{'active-tab': tab === 3, 'inactive-tab': tab !== 3}" class="tab fh">Freebi</div>
+            <div *ngIf="type!='Revista'" (click)="tab = 3" [ngClass]="{'active-tab': tab === 3, 'inactive-tab': tab !== 3}" class="tab fh">Freebi</div>
         </div>
         <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap=".75rem">
-            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
+            <div *ngIf="type!='Revista'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                 <span>Borrador:</span>
                 <mat-slide-toggle class="pdl03" color="primary" [(ngModel)]="isDraft"></mat-slide-toggle>
             </div>
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="">
                 <span>Origen:</span>
-                <select (change)="changePage()" [(ngModel)]="isFromPredyc" class="ft14 shadow-animation borderLight cursorPointer h28px" style="text-align: center;">
-                    <option [ngValue]="true">Predyc</option>
-                    <option [ngValue]="false">Predictiva</option>
+                <select (change)="changePage()" [(ngModel)]="type" class="ft14 shadow-animation borderLight cursorPointer h28px" style="text-align: center;">
+                    <option value="Predyc">Predyc</option>
+                    <option value="Predictiva">Predictiva</option>
+                    <!-- <option value="Revista">Artículo Revista</option> -->
+                    <!-- <option value="RevistaP21">Artículo Revista</option> -->
                 </select>
             </div>
         </div>
@@ -83,7 +85,7 @@
                     <span *ngIf="articlePillars.length === 0" class="ft10 redText">Debes seleccionar por lo menos un pilar</span>
                 </div>
                 <!-- Order number -->
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                <div *ngIf="type!='Revista'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
                     <span class="w100px">Orden:</span>
                     <input [(ngModel)]="orderNumber" type="number" min="1" [max]="maxOrderNumber" style="text-align: center;"
                     class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" />
@@ -92,7 +94,7 @@
             </div>
             <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1rem" class="w-50">
                 <!-- Title SEO-->
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                <div *ngIf="type!='Revista'"  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
                     <span class="w100px">Título SEO:</span>
                     <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
                         <input type="text" [maxlength]="titleSEOMaxLength" [(ngModel)]="titleSEO" class="h32px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" style="text-align: center;" />
@@ -102,20 +104,22 @@
                     </div>
                 </div>
                 <!-- Slug -->
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
-                    <span class="w100px">Slug:</span>
-                    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
-                        <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="h28px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" 
-                        required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
-                        <!-- <div class="progress-bar-container fw">
-                            <div class="progress-bar" [style.width.%]="(slug.length / 90) * 100"></div>
-                        </div> -->
+                <ng-container *ngIf="type!='Revista'">
+                    <div  fxLayout="row" fxLayoutAlign="start center" fxLayoutGap=".5rem" class="fw">
+                        <span class="w100px">Slug:</span>
+                        <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".2rem" class="fw">
+                            <input id="slug" name="slug" [(ngModel)]="slug" #slugCtrl="ngModel" class="h28px ft14 shadow-animation pdl05 pdr05 radius4 borderLight fw" 
+                            required pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" />
+                            <!-- <div class="progress-bar-container fw">
+                                <div class="progress-bar" [style.width.%]="(slug.length / 90) * 100"></div>
+                            </div> -->
+                        </div>
                     </div>
-                </div>
-                <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
-                    <span class="ft10 redText" *ngIf="slugCtrl.errors?.required">Slug es requerido.</span>
-                    <span class="ft10 redText" *ngIf="slugCtrl.errors?.pattern">El formato del slug es inválido.</span>
-                </div>   
+                    <div *ngIf="slugCtrl.invalid && slugCtrl.touched">
+                        <span class="ft10 redText" *ngIf="slugCtrl.errors?.required">Slug es requerido.</span>
+                        <span class="ft10 redText" *ngIf="slugCtrl.errors?.pattern">El formato del slug es inválido.</span>
+                    </div>  
+                </ng-container>
                 <!-- Tags -->
                 <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
@@ -218,7 +222,7 @@
             </div>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1.5rem" class="fw">
+        <div *ngIf="type !='Revista'" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1.5rem" class="fw">
             <!-- Related Articles -->
             <div fxLayout="column" fxLayoutGap=".2rem" class="fw">
                 <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1.5rem" class="cursorPointer fw">
@@ -251,7 +255,7 @@
             </div>
         </div>        
 
-        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1rem" class="fw">
+        <div *ngIf="type !='Revista'" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="1rem" class="fw">
             <!-- Summary -->
             <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap=".5rem" class="fw">
                 <span class="">Resumen:</span>
@@ -292,10 +296,12 @@
         <div fxLayout="column" fxLayoutGap="1rem" fxLayoutAlign="center">
             <input #authorImage type="file" (change)="setImage($event)" hidden accept="image/jpeg, image/png, image/webp" [src]="selectedFile">
             <div *ngIf="!previewImage" (click)="authorImage.click()" class="imageBanner radius10 backGray2 shadowLight" fxLayout="row" fxLayoutAlign="center center">
-                <span>Recomendamos cargar una imagen de 1.920 x 1.080 pixeles</span>
+                <span *ngIf="type!='Revista'">Recomendamos cargar una imagen de 1.920 x 1.080 pixeles / 850 x 1.100 pixeles</span>
+                <span *ngIf="type=='Revista'">Recomendamos cargar una imagen de 850 x 1.100 pixeles</span>
+
             </div>
             <div *ngIf="previewImage" (click)="authorImage.click()" class="imageBanner">
-                <img [src]="previewImage" alt="Imagen seleccionada" class="fw fh radius10">
+                <img [src]="previewImage" alt="Imagen seleccionada" class="fw fh radius10" style=" object-fit: contain;">
             </div>
         </div>
     </div>

@@ -383,6 +383,7 @@ export class ArticleComponent {
         this.prevOrderNumber = articleWithTagPillarsAndCoursesData.orderNumber;
         this.articleCategories = articleWithTagPillarsAndCoursesData.categories;
         this.articleTags = articleWithTagPillarsAndCoursesData.tags;
+        this.type=articleWithTagPillarsAndCoursesData?.type;
         this.articlePillars = articleWithTagPillarsAndCoursesData.pillars; 
         this.articleCourses = articleWithTagPillarsAndCoursesData.courses;
         this.articleRelatedArticles = articleWithTagPillarsAndCoursesData.relatedArticles;
@@ -393,6 +394,15 @@ export class ArticleComponent {
 
         this.previewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
         this.pastPreviewImageFreebi = articleWithTagPillarsAndCoursesData?.urlImageFreebi;
+
+        if(!this.type){
+          this.type = 'Predictiva'
+          if(this.isFromPredyc){
+            this.type = 'Predyc'
+          }
+        }
+
+
 
         if(!this.isFromPredyc){
           this.allCourses=this.allCoursesP21
@@ -416,7 +426,18 @@ export class ArticleComponent {
     }
   }
 
+  type =  'Predyc'
+
   changePage(){
+
+    if(this.type == 'Predyc'){
+      this.isFromPredyc = true
+    }
+    else{
+      this.isFromPredyc = false
+    }
+
+
 
 
 
@@ -652,14 +673,20 @@ export class ArticleComponent {
           const aspectRatio = width / height;
           // const ratioRestriction = 6 / 9
           // const ratioRestriction = 16 / 15 // for 1920px x 1080px
-          const ratioRestriction = 1920 / 1080 //1.7778
+          let ratioRestriction = 1920 / 1080 //1.7778
+          let ratioRestriction2 = 541 / 700 //1.7778
+
+
+          if(this.type =='Revista'){
+            ratioRestriction = 541 / 700 //1.7778
+          }
           const tolerance = 0.01
           console.log("aspectRatio", aspectRatio)
           console.log("ratioRestriction", ratioRestriction)
-          if (Math.abs(aspectRatio - ratioRestriction) > tolerance) {
+          if ((Math.abs(aspectRatio - ratioRestriction) > tolerance) ||(Math.abs(aspectRatio - ratioRestriction2) > tolerance) ) {
             Swal.fire({
               title: "Error!",
-              text: `La imagen debe tener una proporción aproximada de 16:15`,
+              text: `La imagen debe tener una proporción aproximada de ${this.type =='Revista'?'17:22':'16:9 o 17:22'}`,
               icon: "warning",
               confirmButtonColor: "var(--blue-5)",
             });
@@ -736,7 +763,9 @@ export class ArticleComponent {
         }
         else {
           downloadURL = await this.uploadImage();
-          downloadURLFrebi = await this.uploadImage(this.selectedFileFreebi);
+          if(downloadURLFrebi){
+            downloadURLFrebi = await this.uploadImage(this.selectedFileFreebi);
+          }
 
         }
 
@@ -825,7 +854,8 @@ export class ArticleComponent {
           freebiFileInfo:this.freebiFileInfo,
           freebiTitulo:this.freebiTitulo,
           freebiResumen:this.freebiResumen,
-          urlImageFreebi:downloadURLFrebi
+          urlImageFreebi:downloadURLFrebi,
+          type:this.type,
         };
         
         console.log("dataToSave",dataToSave)
@@ -1020,16 +1050,16 @@ export class ArticleComponent {
     if (!this.title) {
       valid = false;
     }
-    if (!this.titleSEO) {
+    if (!this.titleSEO && this.type !='Revista') {
       valid = false;
     }
-    if (!this.summary) {
+    if (!this.summary && this.type !='Revista') {
       valid = false;
     }
-    if (!this.metaDescription) {
+    if (!this.metaDescription && this.type !='Revista') {
       valid = false;
     }
-    if (!this.keyWords) {
+    if (!this.keyWords && this.type !='Revista') {
       valid = false;
     }
     if (!this.selectedAuthorId) {
@@ -1044,7 +1074,7 @@ export class ArticleComponent {
     if (this.articleTags.length === 0) {
       valid = false;
     }
-    if (this.articleCourses.length === 0) {
+    if (this.articleCourses.length === 0 && this.type !='Revista') {
       valid = false;
     }
     if (!this.previewImage) {

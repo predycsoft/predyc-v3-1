@@ -34,6 +34,7 @@ export class ArticlesComponent {
   combinedSubscription: Subscription
   articles: ArticleJson[]
   authors: AuthorWithArticleQty[]
+  revistas: any[]
   tags: ArticleTag[]
   selectorOptions: { value: string, label: string }[] = [
     {value: "all", label: "Todos los autores"}
@@ -41,8 +42,9 @@ export class ArticlesComponent {
 
   selectorpaginaOptions: { value: string, label: string }[] = [
     {value: "all", label: "Todos las paginas"},
-    {value: "predyc", label: "Articulos Predyc"},
-    {value: "predictiva", label: "Articulos predictiva"},
+    {value: "predyc", label: "Artículos Predyc"},
+    {value: "predictiva", label: "Artículos Predictiva"},
+    {value: "revista", label: "Artículos Revista"},
 
   ]
 
@@ -51,13 +53,16 @@ export class ArticlesComponent {
       this.articleService.getArticles$(),
       this.authorService.getAuthors$(),
       this.articleService.getAllArticleTags$(),
+      this.articleService.getAllRevistas$(),
+
     ])
     // .pipe(take(1))
-    .subscribe(([articles, authors, tags]) => {
+    .subscribe(([articles, authors, tags,revistas]) => {
       // console.log("articles", articles)
       // console.log("authors", authors)
       // console.log("tags", tags)
       this.articles = articles
+      this.revistas = revistas
       this.tags = tags
 
       this.authors = authors.map(author => {

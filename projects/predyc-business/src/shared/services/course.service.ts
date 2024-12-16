@@ -19,6 +19,7 @@ import { SubscriptionService } from "projects/predyc-business/src/shared/service
 import { Product } from "projects/shared/models/product.model";
 import { ProductService } from "projects/predyc-business/src/shared/services/product.service";
 import { Activity, Question, StudyPlanClass } from "projects/shared/models";
+import { Article } from "projects/functions/dist/shared/models/article.model";
 
 @Injectable({
   providedIn: "root",
@@ -2253,6 +2254,8 @@ export class CourseService {
     }
 
   }
+
+
 
 
 

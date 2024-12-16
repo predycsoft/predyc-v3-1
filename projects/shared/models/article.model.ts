@@ -33,6 +33,7 @@ export interface ArticleJson {
     freebiTitulo:string,
     freebiResumen:string,
     urlImageFreebi:string,
+    type:string,
 }
 
 export class Article {
@@ -70,7 +71,9 @@ export class Article {
         public freebiFileInfo:any,
         public freebiTitulo:string,
         public freebiResumen:string,
-        public urlImageFreebi:string
+        public urlImageFreebi:string,
+        public type:string,
+
     ) {}
 
     public static fromJson(articleJson: ArticleJson): Article {
@@ -103,7 +106,8 @@ export class Article {
             articleJson.freebiFileInfo,
             articleJson.freebiTitulo,
             articleJson.freebiResumen,
-            articleJson.urlImageFreebi
+            articleJson.urlImageFreebi,
+            articleJson.type,
         )
     }
 
@@ -138,6 +142,8 @@ export class Article {
             freebiTitulo:this.freebiTitulo,
             freebiResumen:this.freebiResumen,
             urlImageFreebi:this.urlImageFreebi,
+            type:this.type
+
         }
     }
 }

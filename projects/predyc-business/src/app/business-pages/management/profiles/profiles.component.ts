@@ -282,7 +282,9 @@ export class ProfilesComponent {
             });
           }
           if (searchText) {
-            const filterValue = this.removeAccents(searchText.toLowerCase());filteredCourses = filteredCourses.filter((course) => this.removeAccents(course.titulo.toLowerCase()).includes(filterValue)
+            const filterValue = this.removeAccents(searchText.toLowerCase());
+            console.log('filterValue',filterValue)
+            filteredCourses = filteredCourses.filter((course) => this.removeAccents(course.titulo.toLowerCase()).includes(filterValue)
             );
           }
           return filteredCourses;

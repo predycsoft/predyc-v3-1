@@ -277,7 +277,7 @@ export class DiplomadoLiveFormComponent {
               console.log('curso',curso)
               courseForExplorer.titulo = curso.liveCourse.title
               let datosLive = {
-                date:curso.sessions[0].date.seconds * 1000,
+                date:curso.sessions[0]?.date?.seconds * 1000,
                 curso:curso
               }
               courseForExplorer.datosLive = datosLive

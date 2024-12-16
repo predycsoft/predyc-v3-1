@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Chart } from "chart.js";
 import {
   Observable,
@@ -10,6 +10,7 @@ import {
   BehaviorSubject,
   take,
   firstValueFrom,
+  finalize,
 } from "rxjs";
 import { Category } from "projects/shared/models/category.model";
 import { Curso, CursoJson } from "projects/shared/models/course.model";
@@ -35,6 +36,8 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import Swal from 'sweetalert2';
 import { PDFService } from "projects/predyc-business/src/shared/services/pdf.service";
 import { InstructorsService } from "projects/predyc-business/src/shared/services/instructors.service";
+import { AngularFireStorage } from "@angular/fire/compat/storage";
+import { ArticleService } from "projects/predyc-business/src/shared/services/article.service";
 
 const MAIN_TITLE = "Predyc - ";
 
@@ -53,19 +56,15 @@ export class RevistaComponent {
   constructor(
     private route: ActivatedRoute,
     private alertService: AlertsService,
-    private categoryService: CategoryService,
     private courseService: CourseService,
-    private enterpriseService: EnterpriseService,
     public icon: IconService,
-    private profileService: ProfileService,
-    private skillService: SkillService,
     private router: Router,
-    private userService: UserService,
     private titleService: Title,
     private authService: AuthService,
     private afs: AngularFirestore,
-    private instructorsService:InstructorsService,
-    private pdfService: PDFService
+    private storage: AngularFireStorage,
+    private pdfService: PDFService,
+    private articleService:ArticleService,
   ) {}
 
   isEditing: boolean;
@@ -78,7 +77,7 @@ export class RevistaComponent {
   categories: Category[];
   // courses: Curso[]
   skills: Skill[];
-  profile: ProfileJson;
+  profile: any;
 
   coursesForExplorer: CoursesForExplorer[];
   filteredCourses: Observable<CoursesForExplorer[]>;
@@ -100,14 +99,219 @@ export class RevistaComponent {
   instrcutores
   courses
 
+  formNewRevista: FormGroup;
+
+
+  metaDescriptionMaxLength = 141
+  keyWordsMaxLength = 100
+
+  async inicializarformNewRevista() {
+    if (this.id == "new") {
+
+      this.formNewRevista = new FormGroup({
+
+        customUrl: new FormControl(''), 
+        metaDescripcion:new FormControl(null), 
+        KeyWords: new FormControl(null), 
+        imagen:new FormControl(null,[ Validators.required]), 
+        fecha:new FormControl(null), 
+        editor:new FormControl(null), 
+
+        resumenEditor:new FormControl(null), 
+        imagenEditor:new FormControl(null), 
+
+
+      })
+    }
+    else{
+
+      this.formNewRevista = new FormGroup({
+
+        customUrl: new FormControl(this.profile['customUrl']), 
+        metaDescripcion:new FormControl(this.profile['metaDescripcion']), 
+        KeyWords: new FormControl(this.profile['KeyWords']), 
+        imagen:new FormControl(this.profile['imagen'],[ Validators.required]), 
+        fecha:new FormControl(this.profile?.fecha), 
+        editor:new FormControl(this.profile?.editor), 
+
+        resumenEditor:new FormControl(this.profile?.resumenEditor), 
+        imagenEditor:new FormControl(this.profile?.imagenEditor), 
+
+
+
+        
+      })
+
+      this.profileDescription = this.profile.description
+      this.profileName = this.profile.name
+      this.isDraft = this.profile.isDraft
+    }
+
+  
+
+
+  }
+
+  isDraft = true
+  articulosArray;
+
+
   async ngOnInit() {
 
     this.authService.user$.subscribe((user) => {
       this.user = user;
     });
 
+    if (this.id === "new") {
+      this.isEditing = true;
+      const title = MAIN_TITLE + "Nueva revista P21";
+      this.titleService.setTitle(title);
+    } else {
+      this.profile = await this.articleService.getRevistaById(this.id)
+      this.isEditing = false;
+    }
+
+    this.inicializarformNewRevista()
+
+    const cursos = await this.articleService.getArticulosRevista() as any[]
+    this.articulosArray = cursos
+
+
+    console.log('coursesForExplorer',this.coursesForExplorer)
+
+    this.coursesForExplorer = cursos.map(course => {
+
+      const studyPlanItemCourseRefItem = this.profile
+      ? this.profile.coursesRef.find((x: any) => {
+          return x.courseRef.id === course.id;
+        })
+      : null;
+      const inStudyPlan = studyPlanItemCourseRefItem ? true : false;
+      const courseForExplorer = {
+        ...course,
+        inStudyPlan: inStudyPlan,
+        studyPlanOrder: studyPlanItemCourseRefItem
+          ? studyPlanItemCourseRefItem.studyPlanOrder
+          : null,
+      };
+      // console.log('courseForExplorer',courseForExplorer)
+      if (inStudyPlan) this.studyPlan.push(courseForExplorer);
+      return courseForExplorer;
+    });
+
+    this.studyPlan.sort((a, b) => a.studyPlanOrder - b.studyPlanOrder);
+
+
+    this.filteredCourses = combineLatest([
+      this.searchControl.valueChanges.pipe(startWith(""))]).pipe(
+      map(([searchText]) => {
+        // Si no hay texto de búsqueda ni categoría seleccionada, devolver todo
+    
+        // Obtener los cursos disponibles
+        let filteredCourses = this.coursesForExplorer;
+
+        if (!searchText) return filteredCourses;
+
+    
+        // Filtrar por categoría si existe
+    
+        // Filtrar por texto de búsqueda si existe
+        if (searchText) {
+          const filterValue = this.removeAccents(searchText.toLowerCase());
+          console.log('filterValue',filterValue)
+          filteredCourses = filteredCourses.filter((course) =>
+            this.removeAccents(course['title'].toLowerCase()).includes(filterValue)
+          );
+          console.log('filteredCourses',filteredCourses)
+        }
+    
+        return filteredCourses;
+      })
+    );
+    
+
 
   }
+
+  fileNameImgCurso
+  uploadingImgCurso = false;
+  uploadProgress$: Observable<number>;
+  uploading_file_progressImgCurso
+
+
+  uploadCourseImage(event,type) {
+    if (!event.target.files[0] || event.target.files[0].length === 0) {
+      Swal.fire({
+        title: "Borrado!",
+        text: `Debe seleccionar una imagen`,
+        icon: "warning",
+        confirmButtonColor: "var(--blue-5)",
+      });
+      return;
+    }
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (_event) => {
+      //this.deleteQuestionImage(pregunta);
+
+      if (file) {
+        this.uploadingImgCurso = true;
+
+        let fileBaseName = file.name.split(".").slice(0, -1).join(".");
+        let fileExtension = file.name.split(".").pop();
+
+        let nombre = fileBaseName + "." + fileExtension;
+        this.fileNameImgCurso = nombre;
+
+        //console.log(nombre)
+
+        // Reorganizar el nombre para que el timestamp esté antes de la extensión
+        let newName = `${fileBaseName}-${Date.now().toString()}.${fileExtension}`;
+
+        let nombreCurso = this.profileName ? this.profileName : "Temporal";
+        let filePath;
+
+        filePath = `RevistasP21/${nombreCurso}/Imagen/${newName}`;
+
+
+        const task = this.storage.upload(filePath, file);
+
+        // Crea una referencia a la ruta del archivo.
+        const fileRef = this.storage.ref(filePath);
+
+        // Obtener el progreso como un Observable
+        this.uploadProgress$ = task.percentageChanges();
+
+        // Suscríbete al Observable para actualizar tu componente de barra de progreso
+        this.uploadProgress$.subscribe((progress) => {
+          //console.log(progress);
+          this.uploading_file_progressImgCurso = Math.floor(progress);
+        });
+
+        // Observa el progreso de la carga del archivo y haz algo cuando se complete.
+        task
+          .snapshotChanges()
+          .pipe(
+            finalize(() => {
+              // Obtén la URL de descarga del archivo.
+              fileRef.getDownloadURL().subscribe((url) => {
+                this.uploadingImgCurso = false;
+                if(type == 'revista'){
+                  this.formNewRevista.get("imagen").patchValue(url);
+                }
+                else if (type == 'editor'){
+                  this.formNewRevista.get("imagenEditor").patchValue(url);
+                }
+              });
+            })
+          )
+          .subscribe();
+      }
+    };
+  }
+
 
   removeAccents(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -178,7 +382,7 @@ export class RevistaComponent {
 
   onCancel() {
     if (this.id === "new") {
-      this.router.navigate(["/management/profiles"]);
+      this.router.navigate(["/admin/articles"]);
     } else {
       this.profileName = this.profileBackup.name;
       this.profileDescription = this.profileBackup.description;
@@ -210,44 +414,50 @@ export class RevistaComponent {
   }
 
 
+  showErrorCurso
+
 
   disableSaveButton: boolean = false;
 
+  getArticleData(course) {
+    let artcileData = this.articulosArray.find(x=>x.id == course.id)
+    return artcileData
+  }
+
   async onSave() {
+    this.showErrorCurso = false
+
     try {
-      if (!this.profileName)
-        throw new Error("Debe indicar un nombre para el perfil");
+      if (!this.profileName){
+        throw new Error("Debe indicar un nombre para la revista");
+      }
 
-      if (
-        this.profiles.find(
-          (x) =>
-            x.name.toLowerCase() == this.profileName.toLowerCase() &&
-            x.id != this.profile?.id &&
-            this.profile?.baseProfile.id != x.id
-        )
-      )
-        throw new Error("El nombre del perfil se encuentra en uso");
+      if(this.formNewRevista.invalid){
+        this.showErrorCurso = true
+        throw new Error("Datos Faltantes");
+      }
 
-      this.disableSaveButton = true;
-      this.alertService.infoAlert(
-        "Se procederá a actualizar los datos del plan de estudio del perfil y de sus usuarios relacionados, por favor espere hasta que se complete la operación"
-      );
+      if(this.studyPlan.length == 0){
+        throw new Error("Debe indicar los artículos de la revisa");
+      }
 
       Swal.fire({
-        title: 'Editando plan de estudio...',
+        title: 'Editando revista...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading()
         }
       });
+
       const coursesRef: {
         courseRef: DocumentReference<Curso>;
         studyPlanOrder: number;
       }[] = this.studyPlan.map((course) => {
         return {
-          courseRef: this.courseService.getCourseRefById(course.id),
+          courseRef: this.articleService.getArticleRefById(course.id) as any,
           studyPlanOrder: course.studyPlanOrder,
+          data:this.getArticleData(course)
         };
       });
 
@@ -255,88 +465,33 @@ export class RevistaComponent {
 
       if (!coursesRef || coursesRef.length == 0){
         Swal.close();
-        throw new Error("Debe indicar los cursos del plan de estudio");
+        throw new Error("Debe indicar los artículos de la revisa");
       }
       
-
-      let enterpriseRef = this.enterpriseService.getEnterpriseRef();
-      if (this.user.isSystemUser) {
-        enterpriseRef = null;
-      }
-      let baseProfile = null;
-      if (this.baseProfile) {
-        baseProfile = this.afs
-          .collection<Profile>(Profile.collection)
-          .doc(this.baseProfile).ref;
-      }
-
-      const profile: Profile = Profile.fromJson({
+      let profile = {
+        ...this.formNewRevista.value,
         id: this.profile ? this.profile.id : null,
         name: this.profileName,
         description: this.profileDescription,
         coursesRef: coursesRef,
-        baseProfile: this.profile?.baseProfile
-          ? this.profile?.baseProfile
-          : baseProfile,
-        enterpriseRef: enterpriseRef,
-        permissions: this.profile ? this.profile.permissions : null,
-        hoursPerMonth: this.profileHoursPerMonth,
-      });
+        editDate:new Date(),
+        isDraft:this.isDraft?this.isDraft:false,
+        createDate:this.profile?.createDate?this.profile.createDate:new Date()
+      };
 
       console.log('profile save',profile)
-      const changesInStudyPlan = {
-        added: [],
-        removed: [],
-        studyPlan: this.studyPlan,
-        profileId: this.profile?.id ? this.profile?.id : null,
-      };
-      if (this?.id !== "new") {
-        this.coursesForExplorer.forEach((course) => {
-          const studyPlanItem = this.studyPlan.find(
-            (item) => item.id === course.id
-          );
-          const isInStudyPlan = studyPlanItem?.id ? true : false;
-          const studyPlanItemBackup = this.profileBackup.selectedCourses.find(
-            (item) => item.courseId === course.id
-          );
-          const wasInStudyPlan = studyPlanItemBackup?.courseId ? true : false;
-          if (isInStudyPlan !== wasInStudyPlan) {
-            // Study Plan changed
-            if (isInStudyPlan) {
-              changesInStudyPlan.added.push({
-                id: course.id,
-                studyPlanOrder: studyPlanItem.studyPlanOrder,
-              });
-            } else {
-              changesInStudyPlan.removed.push({
-                id: course.id,
-              });
-            }
-          }
-        });
 
-        const studyPlanHasBeenUpdated = await this.courseService.updateStudyPlans(changesInStudyPlan,this.profileHoursPerMonth);
-        if (studyPlanHasBeenUpdated)
-          await this.profileService.saveProfile(profile);
-        else{
-          Swal.close();
-          throw new Error(
-            "Ocurrió un error actualizando el plan de estudios de los estudiantes que poseen este perfil"
-          );
-        }
-
-      } else {
-        console.log("profile", profile);
-        const profileId = await this.profileService.saveProfile(profile);
-        this.id = profileId;
-        this.profile = profile;
-        this.router.navigate([`management/profiles/${profileId}`]);
-        this.titleService.setTitle(MAIN_TITLE + this.profile.name);
-      }
+      await this.articleService.saveRevista(profile)
       Swal.close();
+     
       this.alertService.succesAlert("Completado");
       this.disableSaveButton = false;
       this.isEditing = false;
+
+      this.router.navigate([`admin/revista/${profile.id}`]);
+      this.titleService.setTitle(MAIN_TITLE + profile.name);
+
+
     } catch (error) {
       Swal.close();
       console.error(error);

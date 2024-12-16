@@ -7,7 +7,7 @@
   >
     <app-navigate-back
       *ngIf="!isEditing"
-      targetUrl="/management/profiles"
+      targetUrl="/admin/articles"
       class="pdt10"
     >
       {{ isEditing ? "" : profileName }}
@@ -21,6 +21,10 @@
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
         <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="profileName" maxlength="43"> -->
         <div class="edit-button">Modo de edición</div>
+        <div *ngIf="isEditing" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="" class="">
+          <span style="color:white">Borrador:</span>
+          <mat-slide-toggle class="pdl03" color="primary" [(ngModel)]="isDraft"></mat-slide-toggle>
+      </div>
       </div>
       <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
         <div
@@ -38,7 +42,7 @@
           (click)="onSave()"
           [disabled]="disableSaveButton"
         >
-          {{ id === "new" ? "Agregar perfil" : "Guardar perfil" }}
+          {{ id === "new" ? "Agregar Revista" : "Guardar Revista" }}
           <img [src]="icon.save" class="h16px pdl05 makeWhite" alt="" />
         </button>
       </div>
@@ -83,7 +87,12 @@
           <span class="ft500 ft14 black">Detalles de la revista</span>
         </div>
 
-        <div class="mgt15 radius20" *ngIf="isEditing">
+        <div *ngIf="!isEditing" class="mgl05 mgt10">
+          <span>Borrador {{isDraft?'Si':'No'}}</span>
+          
+        </div>
+
+        <div class="mgt15 mgb10 radius20" *ngIf="isEditing">
           <!-- <p class="ft13 gray-8 mgl03" *ngIf="isEditing">Nombre del perfil</p> -->
 
           <div
@@ -131,27 +140,179 @@
         </div>
 
         <div
-          class="pd05 mgt10 radius10 backWhite shadow-animation"
+        class="pd05 mgt10 radius10 backWhite shadow-animation"
+        *ngIf="isEditing"
+        style="margin-bottom: 10px; border: none">
+        <textarea
+          name=""
+          id=""
+          rows="3"
           *ngIf="isEditing"
-          style="margin-bottom: 55px; border: none"
-        >
-          <textarea
-            name=""
-            id=""
-            rows="3"
-            *ngIf="isEditing"
-            [(ngModel)]="profileDescription"
-            placeholder="Introduzca la descripción"
-            style="
-              overflow-y: hidden;
-              width: 100%;
-              resize: none;
-              border: none;
-              background-color: transparent !important;
-            "
-            maxlength="170"
-          ></textarea>
+          [(ngModel)]="profileDescription"
+          placeholder="Introduzca la descripción"
+          style="
+            overflow-y: hidden;
+            width: 100%;
+            resize: none;
+            border: none;
+            background-color: transparent !important;
+          "
+          maxlength="170"
+        ></textarea>
+      </div>
+
+        <mat-accordion>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                  <mat-panel-title>
+                      Meta datos
+                  </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <form [formGroup]="formNewRevista" >
+
+                <div *ngIf="user?.isSystemUser" class="form-group mgt08">
+                  <label class="ft12">URL personalizado</label>
+                  <div class="input-group">
+                      <input
+                      [class.is-invalid]="formNewRevista.controls['customUrl'].errors && showErrorCurso"
+                      formControlName="customUrl"
+                      type="text"
+                      class="form-control customInput2 radius6"
+                      placeholder="Escriba el URL del curso aquí"
+                      >
+                      <div class="input-group-append">
+                          <span class="input-group-text">{{ formNewRevista?.controls['customUrl']?.value?.length || 0 }}</span>
+                      </div>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="formNewRevista?.controls['customUrl']?.errors && showErrorCurso">
+                      Debe indicar el URL del curso
+                  </div>
+                </div>
+        
+                <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
+                    <label>Meta descripción del curso</label>
+                    <textarea [class.is-invalid]="formNewRevista.controls['metaDescripcion'].errors && showErrorCurso" rows="3"
+                              formControlName="metaDescripcion" type="text" class="form-control ft12 customInput2"
+                              [maxLength]="metaDescriptionMaxLength"
+                              placeholder="Escriba la descripción del curso aquí" style="resize: none;"></textarea>
+                    <div class="progress-bar-container fw mgt03">
+                        <div class="progress-bar" [style.width.%]="(formNewRevista?.controls['metaDescripcion']?.value?.length / metaDescriptionMaxLength) * 100"></div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="formNewRevista.controls['metaDescripcion'].errors && showErrorCurso"> 
+                        Debe indicar la meta descripción del curso
+                    </div>
+                </div>
+        
+                <div *ngIf="user.isSystemUser" class="ft12 form-group pdt10">
+                    <label>KeyWords</label>
+                    <textarea [class.is-invalid]="formNewRevista.controls['KeyWords'].errors && showErrorCurso" [maxLength]="keyWordsMaxLength"
+                              rows="3" formControlName="KeyWords" type="text" class="form-control ft12 customInput2"
+                              placeholder="Escriba los KeyWords del curso aquí" style="resize: none;"></textarea>
+                    <div class="progress-bar-container fw mgt03">
+                        <div class="progress-bar" [style.width.%]="(formNewRevista?.controls['KeyWords']?.value?.length / keyWordsMaxLength) * 100"></div>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="formNewRevista.controls['KeyWords'].errors && showErrorCurso"> 
+                        Debe indicar los KeyWords del curso
+                    </div>
+                </div>
+              </form>
+
+
+      
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <label>Fecha</label>
+
+        <form [formGroup]="formNewRevista">
+          <div style="position: relative">
+            <img [src]="icon.calendarAdd" class="makeGray h16px" alt="" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+            <input formControlName="fecha" [class.is-invalid]="formNewRevista.get('fecha').errors && showErrorCurso" type="date" class="form-control pdl20 radius6 shadow-animation borderLight" placeholder="Ingrese la fecha de publicación">
+          </div>
+        </form>
+
+
+
+        <form [formGroup]="formNewRevista">
+          <div>
+            <label>Editor</label>
+            <input formControlName="editor" [class.is-invalid]="formNewRevista.get('editor').errors && showErrorCurso" type="text" class="form-control radius6 shadow-animation borderLight" placeholder="Ingrese el editor">
+
+            <div
+            class="pd05 mgt10 radius10 backWhite shadow-animation"
+            style="border: none">
+
+            <label>Resumen Editor</label>
+
+            <textarea
+              name=""
+              id=""
+              formControlName="resumenEditor" [class.is-invalid]="formNewRevista.get('resumenEditor').errors && showErrorCurso"
+              rows="3"
+              placeholder="Introduzca el resumen del instructor"
+              style="
+                overflow-y: hidden;
+                width: 100%;
+                resize: none;
+                border: none;
+                background-color: transparent !important;
+              "
+              maxlength="170"
+            ></textarea>
+          </div>
+
+          <div class="form-group pdt10">
+            <label class="ft12 pdb05 "  >Foto del editor</label>
+            <div fxLayout="row" fxLayoutAlign="start end" >
+              <!-- <button class="add-button">Adjuntar nueva</button> -->
+              <input (change)="uploadCourseImage($event,'editor')" #editorImage type="file" hidden accept="image/jpeg, image/png , image/webp" />
+              <div>
+                  <!-- {{formNewRevista.get('imagen').value}} -->
+                  <img *ngIf="formNewRevista.get('imagenEditor').value" [src]="formNewRevista.get('imagenEditor').value" alt="Imagen seleccionada" class="avatar3 mgb05">
+              </div>
+            </div>
+            <div *ngIf="isEditing" class="fw" >
+              <button (click)="editorImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+                  <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                  Adjuntar imagen editor
+              </button>
+              <div class="invalid-feedback" *ngIf="formNewRevista?.controls['imagenEditor']?.errors && showErrorCurso">
+                Debe indicar la imagen del editor
+            </div>
+          </div>
         </div>
+
+
+          </div>
+        
+    
+        </form>
+
+
+        <div class="form-group pdt10">
+          <label class="ft12 pdb05 "  >Foto del la revista</label>
+          <div fxLayout="row" fxLayoutAlign="start end" >
+            <!-- <button class="add-button">Adjuntar nueva</button> -->
+            <input (change)="uploadCourseImage($event,'revista')" #cursoImage type="file" hidden accept="image/jpeg, image/png,  image/webp" />
+            <!-- <div class="image-scroll">
+                <img *ngFor="let imagen of imagenesCurso" (click)="seleccionarImagenCurso(imagen)" [src]="imagen" alt="Imagen seleccionada" class="image cursorPointer {{this.formNewCourse.get('imagen').value == imagen? 'img-active': ''}}">
+            </div> -->
+            <div>
+                <!-- {{formNewRevista.get('imagen').value}} -->
+                <img *ngIf="formNewRevista.get('imagen').value" [src]="formNewRevista.get('imagen').value" alt="Imagen seleccionada" class="radius6 mgb05" style="width: 250px !important;">
+            </div>
+          </div>
+          <div *ngIf="isEditing" class="fw" >
+            <button (click)="cursoImage.click()" class="grayButton pd03 radius6 ft12 ft500 h28px mgr10 gray-8" fxLayoutGap="0.625" >
+                <img [src]="icon.arrowUp" class="h16px pdr05" alt="">
+                Adjuntar imagen
+            </button>
+            <div class="invalid-feedback" *ngIf="formNewRevista?.controls['imagen']?.errors && showErrorCurso">
+              Debe indicar la imagen de la revista (Portada)
+          </div>
+        </div>
+      </div>
 
       </div>
 
@@ -192,22 +353,6 @@
             style="width: 100%; overflow: hidden; z-index: 2"
             fxLayout="row"
           >
-            <!-- <button
-              type="button"
-              fxLayout="row"
-              fxLayoutAlign="space-between center"
-              class="gray-10 backGray2 ft12"
-              style="
-                border-radius: 0 0 0 0;
-                width: 30%;
-                height: 100%;
-                padding: 0 10px;
-              "
-              id="dropdownBasic1"
-              ngbDropdownToggle
-            >
-              Categorias
-            </button> -->
             <div
               style="
                 width: 100%;
@@ -257,26 +402,13 @@
                       fxLayoutGap="10px"
                     >
                       <img
-                        [src]="course.imagen"
-                        [alt]="course.titulo"
+                        [src]="course['photoUrl']"
+                        [alt]="course['title']"
                         class="w40px h40px radius4"
                       />
                       <div fxLayout="column" fxLayoutGap="5px">
                         <div class="title-course-badge">
-                          {{ course.titulo | titlecase }}
-                        </div>
-                        <div class="skills-container">
-                          <div
-                            *ngFor="let skill of course.skills"
-                            style="
-                              display: inline-block;
-                              margin-right: 5px;
-                              margin-bottom: 5px;
-                            "
-                            class="skill-badge radius10 backGray2 pdl05 pdr05 gray-8 mgt05"
-                          >
-                            {{ skill.name }}
-                          </div>
+                          {{ course['title'] | titlecase }}
                         </div>
                       </div>
                     </div>
@@ -409,7 +541,7 @@
                       alt=""
                       class="pdr05"
                     />
-                    {{ item.titulo }}
+                    {{ item.title }}
                   </span>
                   <!-- <span>Orden: {{ item.studyPlanOrder }}</span> -->
                 </div>
@@ -419,9 +551,6 @@
                   fxLayoutGap="0.5rem"
                   style="margin-left: 5px"
                 >
-                  <span class="gray-10 ft11 nowrap"
-                    >{{ roundNumber(item.duracion / 60) }} hrs</span
-                  >
                   <img
                     [src]="icon.trash"
                     class="h14px makeGray cursorPointer"
@@ -455,7 +584,7 @@
             >
               <div fxLayout="column" fxLayoutGap="5px" class="ft11">
                 <span class="ft12 gray-10">
-                  {{ item.titulo }}
+                  {{ item.title }}
                 </span>
               </div>
               <div
@@ -464,9 +593,6 @@
                 fxLayoutGap="0.5rem"
                 style="margin-left: 5px"
               >
-                <span class="gray-10 ft11 nowrap">
-                  {{ roundNumber(item.duracion / 60) }} hrs
-                </span>
                 <img
                   *ngIf="isEditing"
                   [src]="icon.trash"
