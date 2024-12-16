@@ -3,6 +3,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
 
   export class Modulo {
     public static collection = 'module'
+    public static backupCollection = 'module-backup'
     id: string = ""
     titulo: string = ""
     numero: number = 0
@@ -18,7 +19,7 @@ import { DocumentReference } from "@angular/fire/compat/firestore"
           duracion: this.duracion,
           clasesRef: this.clasesRef
       }
-  }
+    }
     
   }
   

@@ -464,7 +464,7 @@ export class LogsComponent {
       });
   
       await Promise.all(migrationPromises);
-      console.log(`Migrated and deleted modules for course: ${course.titulo}`);
+      console.log(`Migrated modules for course: ${course.titulo}`);
     }
   
     console.log("XXXXXXX Migration complete");
