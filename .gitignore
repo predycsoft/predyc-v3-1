@@ -46,6 +46,7 @@ Thumbs.db
 *-debug.log
 .runtimeconfig.json
 database/*
+database-new/*
 !database/seed.json
 *.zip
 *.rar
