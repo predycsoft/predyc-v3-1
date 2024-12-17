@@ -852,6 +852,14 @@ export class CourseService {
     );
   }
 
+  public getAllClassesFromCourses(courses: any[]): any[] {
+    // Recorrer todos los cursos, sus módulos y acumular todas las clases
+    const allClasses = courses.flatMap(course =>
+      course.modulos.flatMap(modulo => modulo.clases)
+    );
+    return allClasses;
+  }
+
   // ---- courseByStudent Collection methods
   getCoursesByStudent$(userRef: DocumentReference<User>): Observable<CourseByStudent[]> {
     return this.afs

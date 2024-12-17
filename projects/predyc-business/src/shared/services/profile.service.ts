@@ -87,12 +87,12 @@ export class ProfileService {
           enterpriseRef = this.enterpriseService.getEnterpriseRef();
         }
           
-        // Query to get courses matching enterpriseRef
+        // Query to get profiles matching enterpriseRef
         const enterpriseMatch$ = this.afs.collection<Profile>(Profile.collection, ref =>
           ref.where('enterpriseRef', '==', enterpriseRef)
         ).valueChanges({ idField: 'id' });
       
-        // Query to get courses where enterpriseRef is empty
+        // Query to get profiles where enterpriseRef is empty
         const enterpriseEmpty$ = this.afs.collection<Profile>(Profile.collection, ref =>
           ref.where('enterpriseRef', '==', null)
         ).valueChanges({ idField: 'id' });
