@@ -2849,7 +2849,7 @@ export class PDFService {
               
               console.log(clase)
               if(isCalendar && clase?.typeLocal == 'curso'){
-                let textoInstructor = `Instructor: ${clase.instructorData.nombre} | ${clase.instructorData.resumen}`
+                let textoInstructor = `Instructor: ${clase.instructorData.nombre}`
                 if(textoInstructor.length>130){
                   textoInstructor = textoInstructor.slice(0, 130) + '...';
                 }
@@ -3488,7 +3488,7 @@ export class PDFService {
     });
   }
 
-  async downloadCalendarioP21(meses,year,titulo='Ficha_tecnica_Cursos',showLoading = true) {
+  async downloadCalendarioP21(meses,year,titulo='Ficha_tecnica_Cursos',showLoading = true,textoModalidad = 'En línea, en vivo') {
 
 
     
@@ -3533,7 +3533,7 @@ export class PDFService {
     pdf.setFontSize(18);  // Ajustar el tamaño de la fuente
 
     pdf.text('CALENDARIO DE CURSOS',134,10);
-    pdf.text('En línea, en vivo',162,18);
+    pdf.text(textoModalidad,208,18, { align: 'right' });
     pdf.setFontSize(30);  // Ajustar el tamaño de la fuente
     pdf.text(String(year),184,30);
 
