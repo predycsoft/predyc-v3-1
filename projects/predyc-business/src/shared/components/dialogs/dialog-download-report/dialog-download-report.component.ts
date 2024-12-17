@@ -101,11 +101,20 @@ export class DialogDownloadReportComponent {
       }
     })
     this.profileService.loadProfiles()
-    this.profilesSubscription = combineLatest([this.profileService.getProfiles$(), this.departmentService.getDepartments$(), this.courseService.getCourses$(),this.courseService.getClassesEnterprise$()]).subscribe(([profiles, departments, courses,classes]) => {
+    this.profilesSubscription = combineLatest([
+      this.profileService.getProfiles$(), 
+      this.departmentService.getDepartments$(), 
+      this.courseService.getCourses$(),
+      this.courseService.getClassesEnterprise$()
+    ])
+    // .subscribe(([profiles, departments, courses,classes]) => {
+    .subscribe(([profiles, departments, courses]) => {
       this.profiles = profiles
       this.departments = departments
       this.courses = courses
-      this.classes = classes
+      // this.classes = classes
+      this.classes = this.courseService.getAllClassesFromCourses(courses)
+
       //this.getData();
     })
 

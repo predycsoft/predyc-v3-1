@@ -43,13 +43,15 @@ export class StudyTimeMonthlyLineChartComponent {
       this.courseService.getClassesEnterprise$()
     ])
     .pipe(take(1))
-    .subscribe(async ([studentCourses, studentClasses, allCourses,allClases]) => {
+    // .subscribe(async ([studentCourses, studentClasses, allCourses,allClases]) => {
+    .subscribe(async ([studentCourses, studentClasses, allCourses]) => {
       // console.log("studentCourses", studentCourses)
       // console.log("studentClasses", studentClasses)
       // console.log("allCourses", allCourses)
       // console.log("allClases", allClases)
       this.courses = allCourses
-      this.allClasses = allClases
+      // this.allClasses = allClases
+      this.allClasses = this.courseService.getAllClassesFromCourses(allCourses)
       this.studentCourses = studentCourses.filter(item => item.active && item.dateStartPlan).sort((a, b) => a.dateEndPlan - b.dateEndPlan)
       const coursesIds = studentCourses.map(item => item.id)
       // console.log('coursesIds',coursesIds)
@@ -61,7 +63,7 @@ export class StudyTimeMonthlyLineChartComponent {
         if (!Object.keys(classes).includes(classId)) {
           // New class
           //const classObj = await this.courseService.getClass(classId)
-          const classObj = allClases.find(x=>x.id == classId)
+          const classObj = this.allClasses.find(x=>x.id == classId)
           // console.log('classObj',classObj)
           classes[classId] = classObj
         }
