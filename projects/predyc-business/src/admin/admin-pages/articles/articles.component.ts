@@ -6,6 +6,8 @@ import { IconService } from "projects/predyc-business/src/shared/services/icon.s
 import { ArticleJson, ArticleTag } from "projects/shared/models/article.model";
 import { Author, AuthorJson } from "projects/shared/models/author.model";
 import { combineLatest, Subscription, take } from "rxjs";
+import * as XLSX from 'xlsx-js-style';
+
 
 export interface ArticleData extends ArticleJson {
   data: Object[]
@@ -82,5 +84,35 @@ export class ArticlesComponent {
       queryParams: { status: authorId },
       queryParamsHandling: 'merge'
     });
+  }
+
+  isMobile = false
+  articleHTML
+  importArticlesP21(evt){
+
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      let data = XLSX.utils.sheet_to_json(ws);
+
+
+    // Obtener el contenido y minificarlo
+    const rawContent = data[3]['Content'];
+    const minifiedContent = rawContent.replace(/\s{2,}/g, ' ') // Eliminar espacios múltiples
+                                      .replace(/>\s+</g, '><') // Eliminar espacios entre etiquetas
+                                      .trim(); // Eliminar espacios al inicio y final
+
+    console.log('Minified Content:', minifiedContent);
+    this.articleHTML = minifiedContent;
+    };
+    reader.readAsBinaryString(target.files[0]); 
+
   }
 }

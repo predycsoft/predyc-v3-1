@@ -25,8 +25,16 @@
             Agregar nuevo artículo
           </button>
         </a>
+        <input (change)="importArticlesP21($event)"  type="file"  #FileInput style="display: none;">
+        <!-- <button (click)="FileInput.click()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
+          <img [src]="icon.download" class="h16px pdr05 makeWhite" alt="" />
+          Importar artículos
+        </button> -->
       </div>
       <app-articles-list [articles]="articles" [authors]="authors" [tags]="tags" class=""></app-articles-list>
+      <div class="ql-snow ql-disabled ngx-quill-view">
+        <div class="ql-editor" [ngClass]="{'w-90 centered-container-movil':isMobile}"[innerHTML]="articleHTML"></div>
+      </div>
     </div>
   </ng-container>
   <ng-container *ngIf="tab === 1">
