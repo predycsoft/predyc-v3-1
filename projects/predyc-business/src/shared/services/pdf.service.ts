@@ -3488,7 +3488,7 @@ export class PDFService {
     });
   }
 
-  async downloadCalendarioP21(meses,year,titulo='Ficha_tecnica_Cursos',showLoading = true,textoModalidad) {
+  async downloadCalendarioP21(meses,year,titulo='Ficha_tecnica_Cursos',showLoading = true,textoModalidad = 'En línea, en vivo') {
 
 
     
