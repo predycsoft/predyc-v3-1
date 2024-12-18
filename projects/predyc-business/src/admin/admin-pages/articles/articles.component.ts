@@ -203,38 +203,39 @@ export class ArticlesComponent {
           continue;
         }
   
-        let encodedUrl = encodeURI(url);
+        let encodedUrl = encodeURI(url.startsWith('http:') ? url.replace('http:', 'https:') : url);
         let newUrl = '';
+        let success = false;
+  
+        console.log(`Attempting HTTPS for: ${encodedUrl}`);
   
         try {
-          // Descargar la imagen
-          const response: Blob = await this.retryWithDelay(() => this.downloadImage(encodedUrl), 500, 3);
-          console.log(`Image downloaded: ${name}`);
+          // Descargar la imagen usando HTTPS con reintentos
+          const response: Blob = await this.retryWithDelay(() => this.downloadImage(encodedUrl), 200, 3);
+          success = true;
   
           // Subir la imagen a Firebase Storage
           newUrl = await this.uploadImage(slug, response, name);
-          console.log(`Image uploaded: ${name}`);
           updatedData.push({ ...item, status: 'success', message: 'Uploaded successfully', newUrl });
         } catch (error) {
-          console.error(`Error processing image ${name}:`, error);
+          console.warn(`Failed with HTTPS: ${encodedUrl}`);
   
-          // Intentar con HTTPS si la URL original es HTTP
-          if (encodedUrl.startsWith('http:')) {
-            const httpsUrl = encodedUrl.replace('http:', 'https:');
-            console.log(`Switching to HTTPS: ${httpsUrl}`);
+          // Intentar con HTTP original si HTTPS falla
+          if (url.startsWith('http:')) {
             try {
-              const response: Blob = await this.retryWithDelay(() => this.downloadImage(httpsUrl), 500, 3);
-              console.log(`Image downloaded (HTTPS): ${name}`);
+              const httpUrl = encodeURI(url);
+              console.log(`Reverting to HTTP: ${httpUrl}`);
+              const response: Blob = await this.retryWithDelay(() => this.downloadImage(httpUrl), 200, 3);
   
               newUrl = await this.uploadImage(slug, response, name);
-              console.log(`Image uploaded (HTTPS): ${name}`);
+              success = true;
               updatedData.push({ ...item, status: 'success', message: 'Uploaded successfully', newUrl });
-            } catch (httpsError) {
-              console.error(`Failed with HTTPS URL: ${httpsUrl}`);
-              updatedData.push({ ...item, status: 'error', message: 'Download failed', newUrl: '' });
+            } catch (httpError) {
+              console.error(`Failed with HTTP: ${url}`);
+              updatedData.push({ ...item, status: 'error', message: 'CORS issue or download failed', newUrl: '' });
             }
           } else {
-            updatedData.push({ ...item, status: 'error', message: 'Failed to upload', newUrl: '' });
+            updatedData.push({ ...item, status: 'error', message: 'CORS issue or download failed', newUrl: '' });
           }
         }
   
@@ -260,15 +261,15 @@ export class ArticlesComponent {
     return this.http.get(url, { responseType: 'blob' }).toPromise();
   }
   
-  // Función para reintentar con retraso
+  // Función para reintentar con retraso reducido
   private retryWithDelay(fn: () => Promise<any>, delay: number, retries: number): Promise<any> {
     return new Promise((resolve, reject) => {
       fn()
         .then(resolve)
         .catch((error) => {
           if (retries > 0) {
-            console.log(`Retrying... (${retries} attempts left)`);
             setTimeout(() => {
+              console.log(`Retrying... (${retries} attempts left)`);
               this.retryWithDelay(fn, delay, retries - 1).then(resolve).catch(reject);
             }, delay);
           } else {
@@ -277,6 +278,9 @@ export class ArticlesComponent {
         });
     });
   }
+  
+
+
   
   
   
