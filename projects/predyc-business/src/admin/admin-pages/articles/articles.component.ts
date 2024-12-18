@@ -10,6 +10,7 @@ import { combineLatest, Subscription, take } from "rxjs";
 import * as XLSX from 'xlsx-js-style';
 import { HttpClient } from '@angular/common/http';
 
+
 export interface ArticleData extends ArticleJson {
   data: Object[]
   dataHTML:string
@@ -179,72 +180,129 @@ export class ArticlesComponent {
     }
   }
 
-  async uploadP21Images(evt: Event) {
-    const target: DataTransfer = <DataTransfer>(<unknown>(<HTMLInputElement>evt.target));
-    if (target.files.length !== 1) {
-      throw new Error('Cannot use multiple files');
+  async processFolder(event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    if (!target.files || target.files.length === 0) {
+      console.error('No files selected');
+      return;
     }
   
-    const reader: FileReader = new FileReader();
+    const files = Array.from(target.files);
+    const localImages: Map<string, File> = new Map();
+    let excelFile: File | null = null;
+  
+    // Identificar el archivo Excel en la raíz y mapear imágenes locales
+    for (const file of files) {
+      if (file.name.endsWith('.xlsx') && file.webkitRelativePath.split('/').length === 2) {
+        excelFile = file;
+      } else {
+        const baseFolder = file.webkitRelativePath.split('/')[0];
+        const relativePath = file.webkitRelativePath
+          .replace(baseFolder + '/', '') // Eliminar la carpeta raíz
+          .replace(/^.*wp-content\/uploads\//, '') // Eliminar lo anterior a uploads/
+          .trim()
+          .replace(/\\/g, '/') // Normalizar barras
+          .toLowerCase();
+        localImages.set(relativePath, file);
+      }
+    }
+  
+    if (!excelFile) {
+      console.error('No Excel file found in the root of the folder');
+      return;
+    }
+  
+    // Leer el archivo Excel
+    const reader = new FileReader();
     reader.onload = async (e: any) => {
       const bstr: string = e.target.result;
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
       let data: any[] = XLSX.utils.sheet_to_json(ws);
+
+      console.log('data',data)
   
       const updatedData = [];
+  
+      // Procesar filas del Excel
       for (let index = 0; index < data.length; index++) {
+        // console.clear()
         const item = data[index];
-        const { slug, url, name } = item;
+        const { slug, url, name, status } = item;
+  
+        // Si el status es "success", no procesamos
+        if (status == 'success') {
+          updatedData.push(item);
+          console.log(`Skipping already processed item: ${name}`);
+          continue;
+        }
   
         if (!url || !slug || !name) {
           updatedData.push({ ...item, status: 'error', message: 'Missing data', newUrl: '' });
           continue;
         }
   
-        let encodedUrl = encodeURI(url.startsWith('http:') ? url.replace('http:', 'https:') : url);
-        let newUrl = '';
-        let success = false;
-  
-        console.log(`Attempting HTTPS for: ${encodedUrl}`);
-  
         try {
-          // Descargar la imagen usando HTTPS con reintentos
-          const response: Blob = await this.retryWithDelay(() => this.downloadImage(encodedUrl), 200, 3);
-          success = true;
+          let blob: Blob;
   
-          // Subir la imagen a Firebase Storage
-          newUrl = await this.uploadImage(slug, response, name);
-          updatedData.push({ ...item, status: 'success', message: 'Uploaded successfully', newUrl });
-        } catch (error) {
-          console.warn(`Failed with HTTPS: ${encodedUrl}`);
+          if (url.includes('predictiva21.com/wp-content/uploads')) {
+            // Eliminar parámetros del URL (?fit=1024%2C452)
+            const cleanUrl = url.split('?')[0];
+            const searchPath = cleanUrl.split('/wp-content/uploads/')[1]
+              .trim()
+              .replace(/\\/g, '/')
+              .toLowerCase();
   
-          // Intentar con HTTP original si HTTPS falla
-          if (url.startsWith('http:')) {
-            try {
-              const httpUrl = encodeURI(url);
-              console.log(`Reverting to HTTP: ${httpUrl}`);
-              const response: Blob = await this.retryWithDelay(() => this.downloadImage(httpUrl), 200, 3);
+            console.log('Ruta buscada:', searchPath);
   
-              newUrl = await this.uploadImage(slug, response, name);
-              success = true;
-              updatedData.push({ ...item, status: 'success', message: 'Uploaded successfully', newUrl });
-            } catch (httpError) {
-              console.error(`Failed with HTTP: ${url}`);
-              updatedData.push({ ...item, status: 'error', message: 'CORS issue or download failed', newUrl: '' });
+            if (localImages.has(searchPath)) {
+              const localFile = localImages.get(searchPath);
+              console.log(`Imagen encontrada localmente: ${searchPath}`);
+              blob = await localFile.arrayBuffer().then(buffer => new Blob([buffer], { type: localFile.type }));
+            } else {
+              throw new Error(`Imagen no encontrada localmente: ${searchPath}`);
             }
           } else {
-            updatedData.push({ ...item, status: 'error', message: 'CORS issue or download failed', newUrl: '' });
+            // Descargar imagen externa con proxy si necesario
+            const sanitizedUrl = new URL(url.trim()).href;
+            console.log('sanitizedUrl', sanitizedUrl);
+  
+            let response: Response;
+  
+            try {
+              response = await fetch(sanitizedUrl);
+              if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+            } catch (error) {
+              try {
+                console.warn(`Direct fetch failed, trying via proxy: ${sanitizedUrl}`);
+                const proxyUrl = 'https://cors-proxy.fringe.zone/';
+                const proxiedUrl = proxyUrl + sanitizedUrl;
+                response = await fetch(proxiedUrl);
+                if (!response.ok) throw new Error(`Failed to fetch image via proxy: ${response.statusText}`);
+              } catch (proxyError) {
+                console.error(`Failed to fetch image via proxy: ${proxyError.message}`);
+                throw proxyError; // Relanzar el error del proxy
+              }
+            }
+            
+  
+            blob = await response.blob();
           }
+  
+          const newUrl = await this.uploadImage(slug, blob, name);
+          console.log(`Image uploaded: ${name}`);
+          updatedData.push({ ...item, status: 'success', message: 'Uploaded successfully', newUrl });
+        } catch (error) {
+          console.error(`Failed to process image ${name}:`, error);
+          updatedData.push({ ...item, status: 'error', message: 'Failed to process image', newUrl: '' });
         }
   
-        // Mostrar progreso
         const progress = ((index + 1) / data.length) * 100;
         console.log(`Progreso: ${progress.toFixed(2)}%`);
       }
   
-      // Exportar el archivo Excel con el estado actualizado
+      // Exportar resultados
       const wsOutput: XLSX.WorkSheet = XLSX.utils.json_to_sheet(updatedData);
       const wbOutput: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wbOutput, wsOutput, 'UpdatedImageStatus');
@@ -253,35 +311,16 @@ export class ArticlesComponent {
       console.log('Process completed. Updated Excel exported.');
     };
   
-    reader.readAsBinaryString(target.files[0]);
+    reader.readAsBinaryString(excelFile);
   }
   
-  // Función para descargar la imagen con tipos correctos
-  private async downloadImage(url: string): Promise<Blob> {
-    return this.http.get(url, { responseType: 'blob' }).toPromise();
-  }
   
-  // Función para reintentar con retraso reducido
-  private retryWithDelay(fn: () => Promise<any>, delay: number, retries: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      fn()
-        .then(resolve)
-        .catch((error) => {
-          if (retries > 0) {
-            setTimeout(() => {
-              console.log(`Retrying... (${retries} attempts left)`);
-              this.retryWithDelay(fn, delay, retries - 1).then(resolve).catch(reject);
-            }, delay);
-          } else {
-            reject(error);
-          }
-        });
-    });
-  }
+  
+  
+  
+  
   
 
 
-  
-  
   
 }
