@@ -16,6 +16,29 @@ export class ArticleService {
 
   ) { }
 
+  async saveArticleMasive(articleData: any): Promise<string> {
+    let articleId: string = this.afs.createId(); // Crear un ID único para el artículo
+    articleData.id = articleId;
+  
+    try {
+      // Crear el documento en Firestore con los datos del artículo
+      const articleDocRef = this.afs.collection<any>(Article.collection).doc(articleId);
+      await articleDocRef.set(articleData); // Usar set() para crear el documento
+  
+      // Manejar los "chunks" por separado
+      const { dataHTML } = articleData; // Extraer los datos HTML
+      if (dataHTML) {
+        await this.saveChunks(articleId, dataHTML); // Guardar los chunks si existen
+      }
+  
+      return articleId; // Devolver el ID del artículo creado
+    } catch (error) {
+      console.error('Error saving article:', error);
+      throw error;
+    }
+  }
+
+
   async saveArticle(articleData: ArticleData, isEditMode: boolean, prevOrderNumber: number): Promise<string> {
     let articleId: string = articleData.id;
   
@@ -372,6 +395,10 @@ export class ArticleService {
   getAllArticleTags$() {
     return this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges()
   }
+
+  async getAllArticleTagsPromesa() {
+    return await  firstValueFrom(this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges())
+  }
   
 
   getArticleTagsByIds$(tagsIds: string[]): Observable<ArticleTagJson[]> {
@@ -388,6 +415,13 @@ export class ArticleService {
 
   getAllArticleCategories$() {
     return this.afs.collection<ArticleCategory>(ArticleCategory.collection).valueChanges()
+  }
+  async getAllArticleCategoriesPromesa() {
+    return await firstValueFrom(this.afs.collection<ArticleCategory>(ArticleCategory.collection).valueChanges())
+  }
+
+  getArticleCategorieRefById(id: string): DocumentReference<ArticleCategory> {
+    return this.afs.collection<ArticleCategory>(ArticleCategory.collection).doc(id).ref
   }
   
   getArticleCategoriesByIds$(categoriesIds: string[]): Observable<ArticleCategoryJson[]> {

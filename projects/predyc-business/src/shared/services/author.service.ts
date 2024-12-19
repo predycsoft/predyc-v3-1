@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/compat/firestore';
 import { Author, AuthorJson } from 'projects/shared/models/author.model';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,10 @@ export class AuthorService {
 
   getAuthors$(): Observable<Author[]> {
     return this.afs.collection<Author>(Author.collection).valueChanges()
+  }
+
+  async getAuthorsPromesa(){
+    return await firstValueFrom (this.afs.collection<Author>(Author.collection).valueChanges())
   }
 
   getAuthorById$(authorId: string): Observable<Author> {
