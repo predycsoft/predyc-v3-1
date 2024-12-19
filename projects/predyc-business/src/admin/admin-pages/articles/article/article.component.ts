@@ -367,13 +367,20 @@ export class ArticleComponent {
           );
         })
       ).subscribe(articleWithTagPillarsAndCoursesData => {
+        console.log('articleWithTagPillarsAndCoursesData.data',articleWithTagPillarsAndCoursesData.data)
         this.selectedAuthorId = articleWithTagPillarsAndCoursesData.authorRef.id;
         this.title = articleWithTagPillarsAndCoursesData.title;
         this.titleSEO = articleWithTagPillarsAndCoursesData.titleSEO;
         this.slug = articleWithTagPillarsAndCoursesData.slug;
         this.previewImage = articleWithTagPillarsAndCoursesData.photoUrl;
         this.pastPreviewImage = articleWithTagPillarsAndCoursesData.photoUrl;
-        this.editor.setContents(articleWithTagPillarsAndCoursesData.data);
+        if(articleWithTagPillarsAndCoursesData?.data?.length>0){
+          this.editor.setContents(articleWithTagPillarsAndCoursesData.data);
+        }
+        else{
+          this.editor.clipboard.dangerouslyPasteHTML(articleWithTagPillarsAndCoursesData.dataHTML);
+
+        }
         this.summary = articleWithTagPillarsAndCoursesData.summary;
         this.metaDescription = articleWithTagPillarsAndCoursesData.metaDescription;
         this.keyWords=articleWithTagPillarsAndCoursesData.keyWords

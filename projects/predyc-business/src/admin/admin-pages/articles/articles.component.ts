@@ -92,7 +92,194 @@ export class ArticlesComponent {
 
   isMobile = false
   articleHTML
-  getImagesP21(evt) {
+
+  async migrarArticulos(evt) {
+
+    //se que es malo tener las 3 promesas una debajo de la otra pero solo se uasara para migrar ¯\_(ツ)_/¯
+    const Alltags =  await this.articleService.getAllArticleTagsPromesa()
+    const autores = await this.authorService.getAuthorsPromesa()
+    const Allcategorias = await this.articleService.getAllArticleCategoriesPromesa()
+
+    for (let i = 0; i < Allcategorias.length; i++) {
+      Allcategorias[i]['ref'] = await this.articleService.getArticleCategorieRefById(Allcategorias[i].id)
+    }
+
+    for (let i = 0; i < Alltags.length; i++) {
+      Alltags[i]['ref'] = await this.articleService.getArticleTagRefById(Alltags[i].id)
+    }
+
+
+
+
+    const autor = autores.find(x=>x.id == "Cj6GKai9700MMkXJYBMx") // autor P21
+
+    const authorRef = this.authorService.getAuthorRefById('Cj6GKai9700MMkXJYBMx')
+
+
+    console.log('datos',Alltags,autor,authorRef,Allcategorias)
+    const revisar = []
+
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+  
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+  
+      // Leer la hoja 1: Artículos
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      let data: any[] = XLSX.utils.sheet_to_json(ws);
+  
+      // Leer la hoja 2: Imágenes
+      const wsname2: string = wb.SheetNames[1];
+      const ws2: XLSX.WorkSheet = wb.Sheets[wsname2];
+      let dataImg: any[] = XLSX.utils.sheet_to_json(ws2);
+  
+      console.log('Artículos:', data);
+      console.log('Imágenes:', dataImg);
+
+      const articulosCreate = []
+
+      data = data.filter(articulo=>articulo?.Content && articulo.Title && articulo.Slug)
+  
+      for (let i = 0; i < data.length; i++) {
+        const articulo = data[i];
+        const rawContent = articulo?.Content;
+        let portadaImageUrl = null; // Variable para la imagen de portada
+  
+        if (rawContent && articulo.Title && articulo.Slug) {
+          // Minificar el contenido HTML
+          const minifiedContent = rawContent
+            .replace(/\s{2,}/g, ' ') // Eliminar espacios múltiples
+            .replace(/>\s+</g, '><') // Eliminar espacios entre etiquetas
+            .trim(); // Eliminar espacios al inicio y final
+  
+          articulo['Content'] = minifiedContent;
+  
+          // Extraer los enlaces de imágenes (src)
+          const imgRegex = /<img[^>]+src="([^">]+)"/g; // Expresión regular para src
+          let match;
+  
+          while ((match = imgRegex.exec(minifiedContent)) !== null) {
+            const imageUrl = match[1];
+  
+            // Buscar la URL en dataImg
+            const matchedImage = dataImg.find(img => img.url === imageUrl && img.slug == articulo.Slug);
+            if (matchedImage && matchedImage.newUrl) {
+              // Reemplazar el URL en el contenido
+              articulo['Content'] = articulo['Content'].replace(imageUrl, matchedImage.newUrl);
+            }
+          }
+  
+          // Manejar la columna 'Image URL' (imagen de portada)
+          if (articulo['Image URL']) {
+            const originalImageUrl = articulo['Image URL'].split('|')[0].trim();
+            const matchedImage = dataImg.find(img => img.url === originalImageUrl && img.slug == articulo.Slug);
+            if (matchedImage && matchedImage.newUrl) {
+              portadaImageUrl = matchedImage.newUrl; // Guardar el nuevo URL
+            }
+          }
+
+          const titleSEO = articulo['SEO Title']?articulo['SEO Title']:articulo.Title
+
+          let categoriesData = []
+          let categoriesRef = []
+
+          let categorias = articulo['Categorías']
+          if(categorias){
+            categorias = String(categorias).split(',')
+
+            for(let j = 0; j < categorias.length; j++){
+              const cat = String(categorias[j])
+              // console.log('catRev',cat,categorias,articulo)
+              const catFind = Allcategorias.find(x=>this.removeAccents(x.name.toLowerCase().trim()) == this.removeAccents(cat.toLowerCase().trim()))
+              if(catFind){
+                categoriesData.push({
+                  id:catFind.id,
+                  name:catFind.name
+                })
+                categoriesRef.push(catFind['ref'])
+              }
+              else{
+                // console.log('revisar',articulo,cat)
+                revisar.push(articulo)
+              }
+            }
+
+          }
+          let articleTagsData = []
+          let tagsRef=[]
+          let tags = articulo['Etiquetas']
+          console.log('tags',tags)
+          if(tags){
+            tags = String(tags).split(',')
+            for(let k = 0; k < tags.length; k++){
+              const tag = String(tags[k])
+              const tagFind = Alltags.find(x=>this.removeAccents(x.name.toLowerCase().trim()) == this.removeAccents(tag.toLowerCase().trim()))
+              if(tagFind){
+                articleTagsData.push({
+                  id:tagFind.id,
+                  name:tagFind.name
+                })
+                tagsRef.push(tagFind['ref'])
+              }
+              else{
+                // console.log('revisar',articulo,tag)
+                revisar.push(articulo)
+              }
+            }
+          }
+        
+          let newArticulo = {
+            dataHTML: articulo['Content'],
+            articleRelatedArticlesData:[],
+            relatedArticlesRef:[],
+            coursesRef:[],
+            cursosDatos:[],
+            titleSEO:titleSEO,
+            title:articulo.Title,
+            slug:articulo.Slug,
+            createdAt:new Date(articulo.Date),
+            updatedAt:new Date(articulo.Date),
+            isFromPredyc:false,
+            isDraft:articulo.Status == 'publish'?false:true,
+            orderNumber:data.length-i,
+            type:'Predictiva',
+            photoUrl:portadaImageUrl,
+            metaDescription:articulo['Meta Description'],
+            keyWords:articulo['Focus Keywords'],
+            summary:articulo['Meta Description'],
+            authorData:autor,
+            authorRef:authorRef,
+            categoriesData:categoriesData,
+            categoriesRef:categoriesRef,
+            pillarsData:[],
+            pillarsRef:[],
+            articleTagsData:articleTagsData,
+            tagsRef:tagsRef,
+          }
+          articulosCreate.push(newArticulo)
+          await this.articleService.saveArticleMasive(newArticulo)
+        }
+      };
+  
+      console.log('Artículos procesados:', articulosCreate,revisar);
+    };
+  
+    reader.readAsBinaryString(target.files[0]);
+  }
+
+  removeAccents(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  
+
+  _getImagesP21(evt) {
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) {
       throw new Error('Cannot use multiple files');
@@ -180,7 +367,7 @@ export class ArticlesComponent {
     }
   }
 
-  async processFolder(event: Event): Promise<void> {
+  async _processFolder(event: Event): Promise<void> {
     const target = event.target as HTMLInputElement;
     if (!target.files || target.files.length === 0) {
       console.error('No files selected');
