@@ -495,4 +495,31 @@ export class ArticleService {
     }
 
   }
+  async deleteNonPredyArticles(): Promise<void> {
+    const excludedId = 'CKcmal4Vkz3Q6RnXZnvS'; // ID que no se debe borrar
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('isFromPredyc', '==', false).where('id', '!=', excludedId)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+      if (snapshot.empty) {
+        console.log('No documents match the criteria.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+  
+      snapshot.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+  
+      await batch.commit();
+      console.log('All non-Predy articles (except the excluded ID) have been deleted.');
+    } catch (error) {
+      console.error('Error deleting articles:', error);
+      throw error;
+    }
+  }
+  
 }

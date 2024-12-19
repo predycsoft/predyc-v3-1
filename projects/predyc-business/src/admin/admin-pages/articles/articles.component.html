@@ -26,10 +26,10 @@
           </button>
         </a>
         <input (change)="migrarArticulos($event)"  type="file"   #FileInput style="display: none;">
-        <button (click)="FileInput.click()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
+        <!-- <button (click)="FileInput.click()" fxLayout="row" fxLayoutGap="0.625" fxLayoutAlign="center center" class="blueButtonAnim button-animation" style="border-radius: 24px !important">
           <img [src]="icon.download" class="h16px pdr05 makeWhite" alt="" />
           Importar artículos
-        </button>
+        </button> -->
       </div>
       <app-articles-list [articles]="articles" [authors]="authors" [tags]="tags" class=""></app-articles-list>
       <div class="ql-snow ql-disabled ngx-quill-view">

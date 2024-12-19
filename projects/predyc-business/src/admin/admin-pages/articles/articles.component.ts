@@ -95,6 +95,10 @@ export class ArticlesComponent {
 
   async migrarArticulos(evt) {
 
+    // await this.articleService.deleteNonPredyArticles()
+
+    // return
+
     //se que es malo tener las 3 promesas una debajo de la otra pero solo se uasara para migrar ¯\_(ツ)_/¯
     const Alltags =  await this.articleService.getAllArticleTagsPromesa()
     const autores = await this.authorService.getAuthorsPromesa()
@@ -144,9 +148,10 @@ export class ArticlesComponent {
 
       const articulosCreate = []
 
-      data = data.filter(articulo=>articulo?.Content && articulo.Title && articulo.Slug)
+      data = data.filter(articulo=>articulo?.Content && articulo.Title && articulo.Slug && articulo.Status === 'publish')
   
       for (let i = 0; i < data.length; i++) {
+        console.log(`Articulo ${i+1}/${data.length} (${(((i+1)*100)/data.length).toFixed(2)}%)`)
         const articulo = data[i];
         const rawContent = articulo?.Content;
         let portadaImageUrl = null; // Variable para la imagen de portada
@@ -184,7 +189,8 @@ export class ArticlesComponent {
             }
           }
 
-          const titleSEO = articulo['SEO Title']?articulo['SEO Title']:articulo.Title
+          const titleSEO = (articulo['SEO Title']?articulo['SEO Title']:articulo.Title).replace('%%title%%',articulo.Title)
+
 
           let categoriesData = []
           let categoriesRef = []
@@ -233,7 +239,7 @@ export class ArticlesComponent {
               }
             }
           }
-        
+          const date = articulo.Date ? new Date(articulo.Date) : new Date();        
           let newArticulo = {
             dataHTML: articulo['Content'],
             articleRelatedArticlesData:[],
@@ -243,8 +249,8 @@ export class ArticlesComponent {
             titleSEO:titleSEO,
             title:articulo.Title,
             slug:articulo.Slug,
-            createdAt:new Date(articulo.Date),
-            updatedAt:new Date(articulo.Date),
+            createdAt:date,
+            updatedAt:date,
             isFromPredyc:false,
             isDraft:articulo.Status == 'publish'?false:true,
             orderNumber:data.length-i,
