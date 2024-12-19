@@ -104,27 +104,54 @@ export const checkExpiredSubscriptionsAndNotify5DaysBefore = functions.pubsub.sc
 
 });
 
-export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+export const checkDelayedStudyPlansFromYesterday = functions.pubsub.schedule('0 7 * * 0,2-6').onRun(async (context) => {
+    const now = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+
+    const coursesByStudentRef = admin.firestore().collection('coursesByStudent');
+    const delayedCoursesByStudentSnapshot = await coursesByStudentRef
+    .where('active', '==', true)
+    .where('dateEndPlan', '<', now)
+    .where('dateEndPlan', '>=', yesterday)
+    .where('isExtraCourse', '==', false)
+    .where('dateEnd', '==', null)
+    .get();
+
+    if (delayedCoursesByStudentSnapshot.empty) { console.log('No matching courses found.'); return}
+
+    checkDelayedStudyPlansLocal(delayedCoursesByStudentSnapshot)
+})
+
+export const checkAllDelayedStudyPlans = functions.pubsub.schedule('every monday 07:00').onRun(async (context) => {
     const now = new Date();
 
     const coursesByStudentRef = admin.firestore().collection('coursesByStudent');
     const delayedCoursesByStudentSnapshot = await coursesByStudentRef
     .where('active', '==', true)
     .where('dateEndPlan', '<', now)
+    .where('isExtraCourse', '==', false)
     .where('dateEnd', '==', null)
     .get();
 
     if (delayedCoursesByStudentSnapshot.empty) { console.log('No matching courses found.'); return}
+
+    checkDelayedStudyPlansLocal(delayedCoursesByStudentSnapshot)
+})
+
+async function checkDelayedStudyPlansLocal(delayedCoursesByStudentSnapshot: any) {
 
     // Set() to store uniques userRefs. We just need to create 1 notification per study plan, not course
     const usersWithDelayedCourses = new Set<DocumentReference>();
     delayedCoursesByStudentSnapshot.docs.forEach(doc => {
         const data = doc.data();
         usersWithDelayedCourses.add(data.userRef);
-        console.log("Users delayed", data.userRef.path)
+        // console.log("Users delayed", data.userRef.path)
     });
 
     if (usersWithDelayedCourses.size === 0) { console.log('No users with delayed courses.'); return }
+
+    console.log("------ usersWithDelayedCourses.size", usersWithDelayedCourses.size)
 
     const notificationCollection = admin.firestore().collection('notification');
     const batch = admin.firestore().batch();
@@ -165,13 +192,15 @@ export const checkDelayedStudyPlans = functions.pubsub.schedule('every 24 hours'
     }).catch(error => {
         console.error('Error processing notifications', error);
     });
-});
+
+}
 
 export const checkCompletedStudyPlans = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
     const now = new Date();
 
     const activeCoursesSnapshot = await admin.firestore().collection('coursesByStudent')
         .where('active', '==', true)
+        .where('isExtraCourse', '==', false)
         .get();
 
     if (activeCoursesSnapshot.empty) {
