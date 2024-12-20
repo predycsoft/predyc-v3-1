@@ -260,6 +260,79 @@ export class ArticleService {
     return this.afs.collection<Article>(Article.collection).doc(id).ref;
   }
 
+  async updateArticlesAuthorEmail(): Promise<void> {
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('authorRef', '==', this.afs.doc('/author/Cj6GKai9700MMkXJYBMx').ref)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No matching documents found.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+      let count = 0;
+  
+      snapshot.forEach(doc => {
+        console.log(`Updating document: ${doc.id}`);
+        
+        // Actualizar el campo anidado 'authorData.email'
+        batch.update(doc.ref, { 'authorData.email': 'articulos@predictiva21.com' });
+        count++;
+      });
+  
+      await batch.commit();
+      console.log(`Successfully updated ${count} documents.`);
+    } catch (error) {
+      console.error('Error updating documents:', error);
+      throw error;
+    }
+  }
+  
+  
+
+  async deleteEmptyDocuments(): Promise<void> {
+    const collectionRef = this.afs.collection('article');
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No documents found in the collection.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+      let count = 0;
+  
+      snapshot.forEach(doc => {
+        const docData = doc.data();
+        console.log('docData',docData)
+  
+        // Verificar si el documento está vacío
+        if (Object.keys(docData).length === 0) {
+          console.log(`Marking empty document for deletion: ${doc.id}`);
+          batch.delete(doc.ref);
+          count++;
+        }
+      });
+  
+      if (count > 0) {
+        await batch.commit();
+        console.log(`${count} empty documents have been deleted.`);
+      } else {
+        console.log('No empty documents found.');
+      }
+    } catch (error) {
+      console.error('Error deleting empty documents:', error);
+      throw error;
+    }
+  }
+  
+
   async deleteArticleById(articleId: string): Promise<void> {
     const articleDocRef = this.afs.collection(Article.collection).doc(articleId);
     const dataChunksCollectionRef = articleDocRef.collection(Article.objectSubcollectionName);

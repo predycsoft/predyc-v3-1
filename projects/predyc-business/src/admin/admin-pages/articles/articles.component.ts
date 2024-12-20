@@ -93,11 +93,11 @@ export class ArticlesComponent {
   isMobile = false
   articleHTML
 
-  async migrarArticulos(evt) {
+  async migrarArticulos(evt = null) {
 
     // await this.articleService.deleteNonPredyArticles()
-
-    // return
+    //await this.articleService.updateArticlesAuthorEmail()
+    return
 
     //se que es malo tener las 3 promesas una debajo de la otra pero solo se uasara para migrar ¯\_(ツ)_/¯
     const Alltags =  await this.articleService.getAllArticleTagsPromesa()
