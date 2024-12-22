@@ -32,6 +32,9 @@ import { LiveCourse, LiveCourseTemplate, LiveCourseTemplateJson } from "projects
 import { Session, SessionTemplate, SessionTemplateJson } from "projects/shared/models/session.model";
 import { LiveCourseService } from "../../../services/live-course.service";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import * as XLSX from "xlsx-js-style";
+import { CourseService } from "../../../services/course.service";
+
 
 interface LiveCourseData extends LiveCourseTemplateJson {
   sessions: SessionData[];
@@ -73,7 +76,9 @@ interface SessionData extends SessionTemplateJson {
   styleUrls: ["./create-live-course.component.css"],
 })
 export class CreateLiveCourseComponent {
-  constructor(public icon: IconService, public router: Router, private storage: AngularFireStorage, private modalService: NgbModal, private uploadControl: VimeoUploadService, private afs: AngularFirestore, private dialog: DialogService, public sanitizer: DomSanitizer, private enterpriseService: EnterpriseService, public categoryService: CategoryService, public skillService: SkillService, public moduleService: ModuleService, public courseClassService: CourseClassService, public activityClassesService: ActivityClassesService, private route: ActivatedRoute, private authService: AuthService, private instructorsService: InstructorsService, private alertService: AlertsService, private liveCourseService: LiveCourseService) {}
+  constructor(public icon: IconService, public router: Router, private storage: AngularFireStorage, private modalService: NgbModal, private uploadControl: VimeoUploadService, private afs: AngularFirestore, private dialog: DialogService, public sanitizer: DomSanitizer, private enterpriseService: EnterpriseService, public categoryService: CategoryService, public skillService: SkillService, public moduleService: ModuleService, public courseClassService: CourseClassService, public activityClassesService: ActivityClassesService, private route: ActivatedRoute, private authService: AuthService, private instructorsService: InstructorsService, private alertService: AlertsService, 
+    private liveCourseService: LiveCourseService,
+    private courseService:CourseService) {}
 
   @ViewChild("modalCrearInstructor") modalCrearInstructorContent: TemplateRef<any>;
   @ViewChild("modalCrearPilar") modalCrearPilarContent: TemplateRef<any>;
@@ -3426,5 +3431,83 @@ export class CreateLiveCourseComponent {
   ngOnDestroy() {
     if (this.initDataSubscription) this.initDataSubscription.unsubscribe();
   }
+
+  async getValoraciones() {
+
+    const valoraciones = await this.courseService.getCursoValoraciones(this.liveCourseId,'liveCourse');
+    console.log('valoraciones', valoraciones);
+
+    let valoracionesExport = [];
+    valoraciones.forEach(valoracion => {
+        // Convertir la fecha de string a objeto Date
+        const fechaString = valoracion.valoracion.fecha; // Suponiendo que la fecha está en este campo
+        const fecha = this.convertirFechaString(fechaString); // Convertir la fecha usando la función
+        let respuesta = {
+            nombreUsuario: valoracion.usuarioDetalles.name,
+            curso: valoracion.cursoDetalles.title,
+            empresa: valoracion?.empresaDetalles?.name ? valoracion.empresaDetalles.name : 'independiente',
+            date: fecha, // Mantener como objeto Date
+            ...valoracion.valoracion
+        };
+        valoracionesExport.push(respuesta);
+    });
+
+    valoracionesExport.forEach(element => {
+      delete element['fecha']
+      delete element['completado']
+    });
+
+    console.log('valoracionesExport', valoracionesExport);
+    this.exportToExcel(valoracionesExport, 'valoracionesExport');
+  }
+
+    // Función para convertir la fecha de string a objeto Date
+    convertirFechaString(fechaString: string): Date | null {
+      const partes = fechaString.split(', '); // Separar fecha y hora
+      const fechaParte = partes[0].trim(); // "10 de septiembre de 2024"
+      const horaParte = partes[1] ? partes[1].trim() : ''; // "09:19"
+
+      const meses = {
+          'enero': 0,
+          'febrero': 1,
+          'marzo': 2,
+          'abril': 3,
+          'mayo': 4,
+          'junio': 5,
+          'julio': 6,
+          'agosto': 7,
+          'septiembre': 8,
+          'octubre': 9,
+          'noviembre': 10,
+          'diciembre': 11
+      };
+
+      // Expresión regular para extraer el día, mes y año
+      const regex = /(\d{1,2}) de ([a-zA-Z]+) de (\d{4})/;
+      const match = fechaParte.match(regex);
+      if (match) {
+          const dia = parseInt(match[1], 10);
+          const mes = meses[match[2].toLowerCase()];
+          const anio = parseInt(match[3], 10);
+
+          const fecha = new Date(anio, mes, dia);
+          if (horaParte) {
+              const [horas, minutos] = horaParte.split(':').map(Number);
+              fecha.setHours(horas, minutos);
+          }
+          return fecha;
+      }
+      return null; // Si no se pudo analizar, devolver null
+  }
+
+    // Método para exportar a Excel
+    exportToExcel(jsonData: any[], fileName: string): void {
+      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
+      const workbook: XLSX.WorkBook = {
+        Sheets: { 'data': worksheet },
+        SheetNames: ['data']
+      };
+      XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    }
   
 }
