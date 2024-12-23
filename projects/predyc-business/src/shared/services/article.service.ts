@@ -15,6 +15,101 @@ export class ArticleService {
     private storage: AngularFireStorage,
 
   ) { }
+  async updateArticlesDocument(): Promise<any[]> {
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('isDraft', '==', false)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No articles found with draft = false.');
+        return []; // Retornar un arreglo vacío si no se encuentran artículos
+      }
+  
+      const articulos: any[] = [];
+  
+      for (const doc of snapshot.docs) {
+        const data = doc.data() as any;
+
+        delete data.dataHTML
+        delete data.coursesRef
+        delete data.authorRef
+        delete data.pillarsRef
+        delete data.relatedArticlesRef
+        delete data.tagsRef
+        delete data.categoriesRef
+        delete data.cursosDatos
+        delete data.articleRelatedArticlesData
+        delete data.dataHTMLUrl
+
+        articulos.push(data);
+      }
+  
+      articulos.sort((a, b) => a.orderNumber - b.orderNumber);
+      const articulosP21 = articulos.filter(x=>!x.isFromPredyc)
+      const articulosPredyc = articulos.filter(x=>x.isFromPredyc)
+
+      const settings = await this.fetchLatestSettingsP21()
+
+      settings.articulosP21 = articulosP21
+      settings.articulosPredyc = articulosPredyc
+
+      console.log('settings',settings)
+
+      await this.saveSettingsP21(settings)
+
+
+      return articulos; // Retornar los artículos procesados
+  
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      throw error; // Relanzar el error para que sea manejado externamente
+    }
+  }
+
+  // Función para obtener el diplomado más reciente del calendario
+  async fetchLatestSettingsP21(): Promise<any | null> {
+    try {
+      const snapshot = await this.afs
+        .collection('settingsP21', (ref) =>
+          ref.orderBy('fechaCreacion', 'desc') // Ordenar por fecha en orden descendente
+            .limit(1) // Limitar la consulta a un solo documento
+        )
+        .get()
+        .toPromise();
+
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        return {
+          id: doc.id,
+          ...doc.data() as any,
+        };
+      } else {
+        return null; // No se encontraron registros
+      }
+    } catch (error) {
+      console.error('Error fetching latest diplomado:', error);
+      return null;
+    }
+  }
+
+  async saveSettingsP21(settingsP21) {
+    try {
+      //console.log('certificate add',certificate)
+      const ref = this.afs.collection<any>('settingsP21').doc().ref;
+      await ref.set({...settingsP21, id: ref.id}, { merge: true });
+      settingsP21.id = ref.id;
+      console.log('newCertificate',settingsP21,ref.id)
+      return settingsP21
+    } catch (error) {
+      //console.log(error)
+    }
+
+  }
+  
+  
 
   async saveArticleMasive(articleData: any): Promise<string> {
     let articleId: string = this.afs.createId(); // Crear un ID único para el artículo

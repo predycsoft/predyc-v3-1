@@ -93,6 +93,11 @@ export class ArticlesComponent {
   isMobile = false
   articleHTML
 
+  async updateArticlesDocument(){
+
+    await this.articleService.updateArticlesDocument()
+  }
+
   async migrarArticulos(evt = null) {
 
     // await this.articleService.deleteNonPredyArticles()
