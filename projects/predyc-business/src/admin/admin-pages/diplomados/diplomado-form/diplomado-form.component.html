@@ -21,6 +21,34 @@
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign=" center">
         <!-- <input class="input-box ft12" placeholder="Nombre del perfil" [(ngModel)]="diplomadoName" maxlength="43"> -->
         <div class="edit-button">Diplomado</div>
+        <div fxLayout="row" fxLayoutAlign="start center">
+            <input
+            type="checkbox"
+            [(ngModel)]="destacadoPredyc" 
+            >
+            <label style="padding-left: 5px; color:white">Destacado Predyc</label>
+        </div>
+        <div class="pdl05" fxLayout="row" fxLayoutAlign="start center">
+          <input
+          type="checkbox"
+          [(ngModel)]="visiblePredyc" 
+         >
+          <label style="padding-left: 5px; color:white">Visible Predyc</label>
+        </div>
+        <div class="pdl05" fxLayout="row" fxLayoutAlign="start center">
+          <input
+          type="checkbox"
+          [(ngModel)]="destacadoP21" 
+         >
+          <label style="padding-left: 5px; color:white">Destacado P21</label>
+        </div>
+        <div class="pdl05" fxLayout="row" fxLayoutAlign="start center">
+            <input
+            type="checkbox"
+            [(ngModel)]="visibleP21" 
+            >
+            <label style="padding-left: 5px; color:white">Visible P21</label>
+        </div>
       </div>
       <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">
         <div

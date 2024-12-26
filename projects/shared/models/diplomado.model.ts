@@ -23,6 +23,10 @@ export interface DiplomadoJson {
   metaDescription: string;
   slug: string;
   keyWords: string;
+  destacadoPredyc:boolean;
+  visiblePredyc:boolean;
+  destacadoP21:boolean;
+  visibleP21:boolean;
 
 }
 
@@ -50,6 +54,12 @@ export class Diplomado {
   public users?: User[];
   public enterprise?: Enterprise;
 
+
+  public destacadoPredyc: boolean;
+  public visiblePredyc: boolean;
+  public destacadoP21: boolean;
+  public visibleP21: boolean;
+
   public static fromJson(diplomadoJson: DiplomadoJson): Diplomado {
     let diplomado = new Diplomado();
     diplomado.id = diplomadoJson.id;
@@ -67,6 +77,11 @@ export class Diplomado {
     diplomado.metaDescription = diplomadoJson.metaDescription;
     diplomado.slug = diplomadoJson.slug;
     diplomado.keyWords = diplomadoJson.keyWords;
+
+    diplomado.destacadoPredyc = diplomadoJson.destacadoPredyc;
+    diplomado.visiblePredyc = diplomadoJson.visiblePredyc;
+    diplomado.destacadoP21 = diplomadoJson.destacadoP21;
+    diplomado.visibleP21 = diplomadoJson.visibleP21;
     return diplomado;
   }
 
@@ -86,7 +101,11 @@ export class Diplomado {
       metaDescription: this.metaDescription,
       slug: this.slug,
       keyWords: this.keyWords,
-      duration:this.duration
+      duration:this.duration,
+      destacadoPredyc:this.destacadoPredyc,
+      visiblePredyc:this.visiblePredyc,
+      destacadoP21:this.destacadoP21,
+      visibleP21:this.visibleP21,
     };
   }
 }
