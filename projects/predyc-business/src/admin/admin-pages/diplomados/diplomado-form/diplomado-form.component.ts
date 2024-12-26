@@ -204,7 +204,7 @@ export class DiplomadoFormComponent {
           this.profileDescription = this.diplomado.description;
           this.metaDescription = this.diplomado.metaDescription;
           this.keyWords = this.diplomado.keyWords;
-          this.slug = this.diplomado.slug;
+          this.slug = this.diplomado.slug ? this.diplomado.slug: this.diplomado.id;
           this.profileHoursPerMonth = this.diplomado.hoursPerMonth;
         }
         this.studyPlan = [];
@@ -354,7 +354,7 @@ export class DiplomadoFormComponent {
         visibleP21: this.visibleP21,
         metaDescription: this.metaDescription,
         keyWords: this.keyWords,
-        slug: this.slug,
+        slug: this.slug ? this.slug : this.diplomado.id,
         selectedCourses: this.studyPlan.map((item) => {
           return {
             courseId: item.id,
@@ -640,6 +640,13 @@ export class DiplomadoFormComponent {
         };
       });
 
+      const coursesData: {courseData: any; studyPlanOrder: number;}[] = this.studyPlan.map((course) => {
+        return {
+          courseData:course,
+          studyPlanOrder: course.studyPlanOrder,
+        };
+      });
+
       //console.log('coursesRef',coursesRef)
 
       if (!coursesRef || coursesRef.length == 0){
@@ -670,6 +677,7 @@ export class DiplomadoFormComponent {
         destacadoP21:this.destacadoP21,
         visibleP21:this.visibleP21,
         coursesRef: coursesRef,
+        // coursesData:coursesData,
         baseDiplomado: this.diplomado?.baseDiplomado
           ? this.diplomado?.baseDiplomado
           : baseDiplomado,
@@ -678,7 +686,7 @@ export class DiplomadoFormComponent {
         hoursPerMonth: this.profileHoursPerMonth,
         metaDescription: this.metaDescription,
         keyWords: this.keyWords,
-        slug: this.slug
+        slug: this.slug?  this.slug: this.diplomado.id
       });
 
       console.log('diplomado save',diplomado)

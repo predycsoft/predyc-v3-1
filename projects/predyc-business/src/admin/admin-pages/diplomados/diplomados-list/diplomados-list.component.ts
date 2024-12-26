@@ -157,6 +157,10 @@ export class DiplomadosListComponent {
 
   }
 
+  fixData(){
+    
+  }
+
   
 
 
