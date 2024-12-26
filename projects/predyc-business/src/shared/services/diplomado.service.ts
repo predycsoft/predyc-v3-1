@@ -397,6 +397,44 @@ export class DiplomadoService {
     return diplomados;
   }
 
+  async updateDiplomadosSlugs(): Promise<void> {
+    const collectionRef = this.afs.collection('diplomado');
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No documents found in the "diplomados" collection.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+      let updatedCount = 0;
+  
+      snapshot.forEach(doc => {
+        const docData = doc.data() as any; 
+  
+        // Si el campo 'slug' no existe, agregarlo usando el ID del documento
+        if (!docData.slug) {
+          console.log(`Adding slug to document: ${doc.id}`);
+          batch.update(doc.ref, { slug: doc.id });
+          updatedCount++;
+        }
+      });
+  
+      if (updatedCount > 0) {
+        await batch.commit();
+        console.log(`${updatedCount} documents updated with slugs.`);
+      } else {
+        console.log('All documents already have slugs.');
+      }
+    } catch (error) {
+      console.error('Error updating slugs in diplomados:', error);
+      throw error;
+    }
+  }
+  
+
 
   
   
