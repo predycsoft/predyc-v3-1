@@ -547,7 +547,7 @@ export class CourseService {
                 // Fetch modules for each course
                 const modules$ = this.afs
                   .collection(
-                    `${Curso.collection}/${course.id}/${Modulo.collection}`
+                    `module-backup/${course.id}/${Modulo.collection}`
                   )
                   .valueChanges();
 

@@ -1243,9 +1243,13 @@ export class CreateCourseComponent {
         let clases = []
         modulo['clases'].forEach(clase => {
           console.log('clasesToSave',clase)
+          
+          if (clase.activity){
+            clase.activity = {...clase.activity}
+          }
           let claseLocal = {
             ...clase,
-            archivos:clase.archivos,
+            // archivos:clase.archivos,
             id:clase.id,
             duracion:clase.duracion,
             tipo:clase.tipo,
@@ -1264,6 +1268,8 @@ export class CreateCourseComponent {
         }
         modulosToSave.push(moduloLocal)
       });
+
+      console.log('modulosToSave',modulosToSave)
 
       await this.afs.collection("course").doc(this.curso.id).update({
         duracion: duracion,
