@@ -252,6 +252,14 @@ export class SalesComponent {
       const producto = this.productos.find(x=>x.id == saleValues.plan)
 
       saleToSave.productName = producto.name
+
+      if( saleToSave.dividir === 'false'){
+        saleToSave.dividir = false
+      }
+      if( saleToSave.dividir === 'true'){
+        saleToSave.dividir = true
+      }
+
     
       console.log('saleValues',saleValues,saleToSave)
       await this.chargeService.saveSale(saleToSave)
