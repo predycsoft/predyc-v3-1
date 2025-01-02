@@ -33,6 +33,7 @@ export class SalesListComponent {
   ){}
 
   displayedColumns: string[] = [
+    "id",
     "product",
     "clientShow",
     "monto",
