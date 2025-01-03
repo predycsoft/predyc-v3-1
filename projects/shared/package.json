@@ -1,5 +1,8 @@
 {
     "name": "shared",
+    "scripts": {
+        "build": "tsc"
+    },
     "version": "0.0.1",
     "dependencies": {
         "@angular/fire": "^17.0.1"

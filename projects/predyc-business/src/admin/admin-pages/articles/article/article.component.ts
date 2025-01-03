@@ -26,7 +26,7 @@ import frontMatter from 'front-matter';
 import { marked } from 'marked';
 
 const Module = Quill.import("core/module");
-const BlockEmbed = Quill.import("blots/block/embed");
+const BlockEmbed: any = Quill.import("blots/block/embed");
 
 class ImageBlot extends BlockEmbed {
   static blotName = "image";

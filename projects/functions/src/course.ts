@@ -123,3 +123,51 @@ export const onCourseCreated = functions.firestore.document('course/{doc}').onCr
     return null;
 
 })
+
+export const updateStudentQty = functions.pubsub.schedule('0 4 * * 1').onRun(async (context) => {
+    try {
+      await _updateStudentQty()
+    } catch (error: any) {     
+      console.error("Error updating student quantities:", error);
+      throw new functions.https.HttpsError("unknown", error.message);
+    }
+  });
+
+export const updateStudentQtyEndpoint = functions.https.onRequest(async (req, res) => {
+    corsHandler(req, res, async () => {
+        try {
+            await _updateStudentQty()
+            // res.status(200).json(courseIds);
+        } catch (error) {
+            res.status(500).send('Error retrieving course IDs.');
+        }
+    })
+  
+});
+
+const _updateStudentQty = async () => {
+    const coursesSnapshot = await db.collection('course').get();
+  
+      // Loop through each course
+      const updatePromises = coursesSnapshot.docs.map(async (courseDoc: any) => {
+        const courseId = courseDoc.id;
+  
+        // Query coursesByStudent to count students for this course
+        const studentsSnapshot = await db
+          .collection('coursesByStudent')
+          .where('courseRef', '==', db.collection('course').doc(courseId))
+          .get();
+  
+        const studentQty = studentsSnapshot.size; // Get the count of matching documents
+  
+        // Update the course document with the calculated student quantity
+        return db.collection('course').doc(courseId).update({
+          studentQty: studentQty,
+        });
+      });
+  
+      // Wait for all updates to complete
+      await Promise.all(updatePromises);
+  
+      console.log("Successfully updated student quantities for all courses.");
+}
