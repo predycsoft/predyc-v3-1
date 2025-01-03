@@ -123,7 +123,12 @@ export class StudyTimeMonthlyLineChartComponent {
           timestampForSort: firestoreTimestampToNumberTimestamp(studentClass.dateEnd)
         }
       }
-      months[`${realEndDateMonthNumber}-${realEndDateYearNumber}`]['realMinutes'] = months[`${realEndDateMonthNumber}-${realEndDateYearNumber}`]['realMinutes'] + this.classes[studentClass.classRef.id].duracion
+      if( this.classes[studentClass.classRef.id]){
+        months[`${realEndDateMonthNumber}-${realEndDateYearNumber}`]['realMinutes'] = months[`${realEndDateMonthNumber}-${realEndDateYearNumber}`]['realMinutes'] + this.classes[studentClass.classRef.id].duracion
+      }
+      else{
+        months[`${realEndDateMonthNumber}-${realEndDateYearNumber}`]['realMinutes'] = months[`${realEndDateMonthNumber}-${realEndDateYearNumber}`]['realMinutes'] + 0
+      }
     })
     const orderedMonths = Object.keys(months).map(key => months[key]).sort((a, b) => a['timestampForSort'] - b['timestampForSort'])
     const data = []
