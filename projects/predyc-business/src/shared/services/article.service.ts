@@ -663,6 +663,37 @@ export class ArticleService {
     }
 
   }
+
+  async updateMetadata(articulo): Promise<void> {
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('isFromPredyc', '==', false).where('slug', '==', articulo.Slug)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log(`No matching articles found for slug: ${articulo.Slug}`);
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+  
+      snapshot.forEach(doc => {
+        console.log(`Updating metaDescription for document: ${doc.id}`);
+        batch.update(doc.ref, { metaDescription: articulo.MetaDescripcion });
+      });
+  
+      await batch.commit();
+      console.log(`metaDescription updated for articles with slug: ${articulo.Slug}`);
+    } catch (error) {
+      console.error(`Error updating metadata for slug: ${articulo.Slug}`, error);
+      throw error;
+    }
+  }
+
+
+
   async deleteNonPredyArticles(): Promise<void> {
     const excludedId = 'CKcmal4Vkz3Q6RnXZnvS'; // ID que no se debe borrar
     const collectionRef = this.afs.collection('article', ref => 

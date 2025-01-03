@@ -288,6 +288,30 @@ export class ArticlesComponent {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
+  _fixMetaDescription(evt) {
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+  
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      let data: any[] = XLSX.utils.sheet_to_json(ws);
+  
+      for (let i = 0; i < data.length; i++) {
+        const articulo = data[i];
+        // console.log(articulo)
+        await this.articleService.updateMetadata(articulo);
+      }
+  
+    };
+  
+    reader.readAsBinaryString(target.files[0]);
+  }
   
 
   _getImagesP21(evt) {
