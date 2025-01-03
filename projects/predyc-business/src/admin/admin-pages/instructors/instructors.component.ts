@@ -217,18 +217,21 @@ export class InstructorsComponent {
         let totalTime = 0;
         completedClasses.forEach(completedClass => {
           let classe = this.classes.find(x=>x.id == completedClass.classRef.id)
-          if(!classe.instructorRef){
-            let curso = this.courses.find(x=>x.id == classe.idCurso)
-            classe.instructorRef = curso.instructorRef
+          console.log('revisar',this.classes,classe,completedClass)
+          if(classe){
+            if(!classe.instructorRef){
+              let curso = this.courses.find(x=>x.id == classe.idCurso)
+              classe.instructorRef = curso.instructorRef
+            }
+            // console.log('classe',classe)
+            completedClass.clase = classe
+            totalTime+= classe.duracion
           }
-          // console.log('classe',classe)
-          completedClass.clase = classe
-          totalTime+= classe.duracion
         });
   
         this.instructors.forEach(instructor => {
   
-          let classesInPeriod = completedClasses.filter(x=>x.clase.instructorRef.id == instructor.id)
+          let classesInPeriod = completedClasses.filter(x=>x.clase?.instructorRef?.id == instructor.id)
           let datosClases = classesInPeriod.map(clase => {
             return clase.clase
           });
