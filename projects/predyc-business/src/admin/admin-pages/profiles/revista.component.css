@@ -115,7 +115,7 @@
 }
 
 .dropdownMenuCourse {
-    width: 600px;
+    width: 800px;
 }
 
 .dropdownContainer{
@@ -147,3 +147,11 @@
 .dropCourse:hover{
     background-color: var(--blue-1);
 }
+
+.title-course-badge-art {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 705px; /* Ajusta esto según el tamaño deseado */
+  }

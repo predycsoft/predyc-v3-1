@@ -41,8 +41,8 @@ export { checkExpiredLicenses, }
 import { checkExpiredSubscriptions, } from './subscription'
 export { checkExpiredSubscriptions, }
 
-import { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, checkCompletedStudyPlans } from './notifications'
-export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkDelayedStudyPlans, checkCompletedStudyPlans }
+import { checkExpiredSubscriptionsAndNotify5DaysBefore, checkCompletedStudyPlans, checkDelayedStudyPlansFromYesterday, checkAllDelayedStudyPlans } from './notifications'
+export { checkExpiredSubscriptionsAndNotify5DaysBefore, checkCompletedStudyPlans, checkDelayedStudyPlansFromYesterday, checkAllDelayedStudyPlans }
 
 import { sendLiveCourseEmail, } from './live-course'
 export { sendLiveCourseEmail, }

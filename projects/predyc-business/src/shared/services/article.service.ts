@@ -15,6 +15,124 @@ export class ArticleService {
     private storage: AngularFireStorage,
 
   ) { }
+  async updateArticlesDocument(): Promise<any[]> {
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('isDraft', '==', false)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No articles found with draft = false.');
+        return []; // Retornar un arreglo vacío si no se encuentran artículos
+      }
+  
+      const articulos: any[] = [];
+  
+      for (const doc of snapshot.docs) {
+        const data = doc.data() as any;
+
+        delete data.dataHTML
+        delete data.coursesRef
+        delete data.authorRef
+        delete data.pillarsRef
+        delete data.relatedArticlesRef
+        delete data.tagsRef
+        delete data.categoriesRef
+        delete data.cursosDatos
+        delete data.articleRelatedArticlesData
+        delete data.dataHTMLUrl
+
+        articulos.push(data);
+      }
+  
+      articulos.sort((a, b) => a.orderNumber - b.orderNumber);
+      const articulosP21 = articulos.filter(x=>!x.isFromPredyc)
+      const articulosPredyc = articulos.filter(x=>x.isFromPredyc)
+
+      const settings = await this.fetchLatestSettingsP21()
+
+      settings.articulosP21 = articulosP21
+      settings.articulosPredyc = articulosPredyc
+
+      console.log('settings',settings)
+
+      await this.saveSettingsP21(settings)
+
+
+      return articulos; // Retornar los artículos procesados
+  
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      throw error; // Relanzar el error para que sea manejado externamente
+    }
+  }
+
+  // Función para obtener el diplomado más reciente del calendario
+  async fetchLatestSettingsP21(): Promise<any | null> {
+    try {
+      const snapshot = await this.afs
+        .collection('settingsP21', (ref) =>
+          ref.orderBy('fechaCreacion', 'desc') // Ordenar por fecha en orden descendente
+            .limit(1) // Limitar la consulta a un solo documento
+        )
+        .get()
+        .toPromise();
+
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        return {
+          id: doc.id,
+          ...doc.data() as any,
+        };
+      } else {
+        return null; // No se encontraron registros
+      }
+    } catch (error) {
+      console.error('Error fetching latest diplomado:', error);
+      return null;
+    }
+  }
+
+  async saveSettingsP21(settingsP21) {
+    try {
+      //console.log('certificate add',certificate)
+      const ref = this.afs.collection<any>('settingsP21').doc().ref;
+      await ref.set({...settingsP21, id: ref.id}, { merge: true });
+      settingsP21.id = ref.id;
+      console.log('newCertificate',settingsP21,ref.id)
+      return settingsP21
+    } catch (error) {
+      //console.log(error)
+    }
+
+  }
+  
+  
+
+  async saveArticleMasive(articleData: any): Promise<string> {
+    let articleId: string = this.afs.createId(); // Crear un ID único para el artículo
+    articleData.id = articleId;
+  
+    try {
+      // Crear el documento en Firestore con los datos del artículo
+      const articleDocRef = this.afs.collection<any>(Article.collection).doc(articleId);
+      await articleDocRef.set(articleData); // Usar set() para crear el documento
+  
+      // Manejar los "chunks" por separado
+      const { dataHTML } = articleData; // Extraer los datos HTML
+      if (dataHTML) {
+        await this.saveChunks(articleId, dataHTML); // Guardar los chunks si existen
+      }
+  
+      return articleId; // Devolver el ID del artículo creado
+    } catch (error) {
+      console.error('Error saving article:', error);
+      throw error;
+    }
+  }
+
 
   async saveArticle(articleData: ArticleData, isEditMode: boolean, prevOrderNumber: number): Promise<string> {
     let articleId: string = articleData.id;
@@ -237,6 +355,79 @@ export class ArticleService {
     return this.afs.collection<Article>(Article.collection).doc(id).ref;
   }
 
+  async updateArticlesAuthorEmail(): Promise<void> {
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('authorRef', '==', this.afs.doc('/author/Cj6GKai9700MMkXJYBMx').ref)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No matching documents found.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+      let count = 0;
+  
+      snapshot.forEach(doc => {
+        console.log(`Updating document: ${doc.id}`);
+        
+        // Actualizar el campo anidado 'authorData.email'
+        batch.update(doc.ref, { 'authorData.email': 'articulos@predictiva21.com' });
+        count++;
+      });
+  
+      await batch.commit();
+      console.log(`Successfully updated ${count} documents.`);
+    } catch (error) {
+      console.error('Error updating documents:', error);
+      throw error;
+    }
+  }
+  
+  
+
+  async deleteEmptyDocuments(): Promise<void> {
+    const collectionRef = this.afs.collection('article');
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+  
+      if (snapshot.empty) {
+        console.log('No documents found in the collection.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+      let count = 0;
+  
+      snapshot.forEach(doc => {
+        const docData = doc.data();
+        console.log('docData',docData)
+  
+        // Verificar si el documento está vacío
+        if (Object.keys(docData).length === 0) {
+          console.log(`Marking empty document for deletion: ${doc.id}`);
+          batch.delete(doc.ref);
+          count++;
+        }
+      });
+  
+      if (count > 0) {
+        await batch.commit();
+        console.log(`${count} empty documents have been deleted.`);
+      } else {
+        console.log('No empty documents found.');
+      }
+    } catch (error) {
+      console.error('Error deleting empty documents:', error);
+      throw error;
+    }
+  }
+  
+
   async deleteArticleById(articleId: string): Promise<void> {
     const articleDocRef = this.afs.collection(Article.collection).doc(articleId);
     const dataChunksCollectionRef = articleDocRef.collection(Article.objectSubcollectionName);
@@ -372,6 +563,10 @@ export class ArticleService {
   getAllArticleTags$() {
     return this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges()
   }
+
+  async getAllArticleTagsPromesa() {
+    return await  firstValueFrom(this.afs.collection<ArticleTag>(ArticleTag.collection).valueChanges())
+  }
   
 
   getArticleTagsByIds$(tagsIds: string[]): Observable<ArticleTagJson[]> {
@@ -388,6 +583,13 @@ export class ArticleService {
 
   getAllArticleCategories$() {
     return this.afs.collection<ArticleCategory>(ArticleCategory.collection).valueChanges()
+  }
+  async getAllArticleCategoriesPromesa() {
+    return await firstValueFrom(this.afs.collection<ArticleCategory>(ArticleCategory.collection).valueChanges())
+  }
+
+  getArticleCategorieRefById(id: string): DocumentReference<ArticleCategory> {
+    return this.afs.collection<ArticleCategory>(ArticleCategory.collection).doc(id).ref
   }
   
   getArticleCategoriesByIds$(categoriesIds: string[]): Observable<ArticleCategoryJson[]> {
@@ -428,7 +630,7 @@ export class ArticleService {
   async getArticulosRevista(): Promise<any[]> {
     return await firstValueFrom(
       this.afs.collection<any>(Article.collection, ref => 
-        ref.where('type', '==', 'Revista')
+        ref.where('isFromPredyc', '==', false)
       ).valueChanges()
     );
   }
@@ -461,4 +663,31 @@ export class ArticleService {
     }
 
   }
+  async deleteNonPredyArticles(): Promise<void> {
+    const excludedId = 'CKcmal4Vkz3Q6RnXZnvS'; // ID que no se debe borrar
+    const collectionRef = this.afs.collection('article', ref => 
+      ref.where('isFromPredyc', '==', false).where('id', '!=', excludedId)
+    );
+  
+    try {
+      const snapshot = await collectionRef.get().toPromise();
+      if (snapshot.empty) {
+        console.log('No documents match the criteria.');
+        return;
+      }
+  
+      const batch = this.afs.firestore.batch();
+  
+      snapshot.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+  
+      await batch.commit();
+      console.log('All non-Predy articles (except the excluded ID) have been deleted.');
+    } catch (error) {
+      console.error('Error deleting articles:', error);
+      throw error;
+    }
+  }
+  
 }

@@ -47,7 +47,7 @@ const styleMail = `
 </style>`;
 
 
-export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.schedule('0 4 * * 1,4').onRun(async (context) => { // aun sin deploy
+export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.schedule('0 4 * * 4').onRun(async (context) => { // Solo los jueves
   try {
     await generateReportsAdminAllEnterprises();
   } catch (error: any) {
@@ -56,7 +56,7 @@ export const generateReportsAdminAllEnterprisesSchedule = functions.pubsub.sched
   }
 });
 
-export const generateReportsUsersAllEnterprisesSchedule = functions.pubsub.schedule('0 6 * * 1,4').onRun(async (context) => { // aun sin deploy
+export const generateReportsUsersAllEnterprisesSchedule = functions.pubsub.schedule('0 6 * * 4').onRun(async (context) => { // Solo los jueves
   try {
     await generateReportsUsersAllEnterprises();
   } catch (error: any) {

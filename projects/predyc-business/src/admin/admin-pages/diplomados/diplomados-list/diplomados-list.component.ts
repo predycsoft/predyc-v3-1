@@ -157,6 +157,12 @@ export class DiplomadosListComponent {
 
   }
 
+  async fixData(){
+
+    await this.diplomadoService.updateDiplomadosSlugs()
+    
+  }
+
   
 
 

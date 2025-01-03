@@ -20,5 +20,7 @@
         <app-logs-list *ngIf="filteredLogs.length > 0" class="fw mgr03" [logs]="filteredLogs"></app-logs-list>
         <span *ngIf="filteredLogs.length === 0 && customDate">No hay registros para la fecha seleccionada</span>
     </div>
-    <button class="blueButton" (click)="debugNewCoursesWithClasses()">Debug</button>
+    <button class="blueButton" (click)="migrateModulesToBackup()">Migrar modulos a coleccion de back up</button>
+    <button class="redButton" (click)="deleteModules()">Eliminar modulos</button>
+    <button class="greenButton" (click)="restoreModulesFromBackup()">Recuperar modulos</button>
 </div>

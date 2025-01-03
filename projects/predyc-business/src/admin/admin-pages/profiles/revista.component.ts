@@ -153,6 +153,7 @@ export class RevistaComponent {
   }
 
   isDraft = true
+  articulosArray;
 
 
   async ngOnInit() {
@@ -173,6 +174,8 @@ export class RevistaComponent {
     this.inicializarformNewRevista()
 
     const cursos = await this.articleService.getArticulosRevista() as any[]
+    this.articulosArray = cursos
+
 
     console.log('coursesForExplorer',this.coursesForExplorer)
 
@@ -416,6 +419,11 @@ export class RevistaComponent {
 
   disableSaveButton: boolean = false;
 
+  getArticleData(course) {
+    let artcileData = this.articulosArray.find(x=>x.id == course.id)
+    return artcileData
+  }
+
   async onSave() {
     this.showErrorCurso = false
 
@@ -434,13 +442,14 @@ export class RevistaComponent {
       }
 
       Swal.fire({
-        title: 'Editando plan de estudio...',
+        title: 'Editando revista...',
         text: 'Por favor, espera.',
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading()
         }
       });
+
       const coursesRef: {
         courseRef: DocumentReference<Curso>;
         studyPlanOrder: number;
@@ -448,6 +457,7 @@ export class RevistaComponent {
         return {
           courseRef: this.articleService.getArticleRefById(course.id) as any,
           studyPlanOrder: course.studyPlanOrder,
+          data:this.getArticleData(course)
         };
       });
 

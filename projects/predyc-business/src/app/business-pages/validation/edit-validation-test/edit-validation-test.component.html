@@ -124,7 +124,7 @@
                                     >
                                     <div fxLayout="row" fxLayoutAlign="space-between start" class="fw">
                                         <div fxLayout="row" fxLayoutGap="10px" class="fw">
-                                            <div class="ft500 ft12">
+                                            <div class="ft500 ft12" style=" white-space: pre-line;">
                                                 <!-- numero pregunta -->
                                                 Pregunta {{i+1}} {{ question.get('text').value ? '- ' + (question.get('text').value.length > questionMaxSize ? (question.get('text').value | slice:0:questionMaxSize) + '...' : question.get('text').value) : '' }}
                                             </div>
@@ -516,7 +516,7 @@
                                     >
                                     <div fxLayout="row" fxLayoutAlign="space-between start" class="fw pd05 pdb0">
                                         <div fxLayout="row" fxLayoutGap="10px" class="fw">
-                                            <div class="ft500 ft12">
+                                            <div class="ft500 ft12" style=" white-space: pre-line;">
                                                 <!-- numero pregunta -->
                                                 Pregunta {{ questionIndex + 1 }}
                                             </div>

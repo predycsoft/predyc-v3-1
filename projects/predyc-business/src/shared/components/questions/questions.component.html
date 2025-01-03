@@ -49,7 +49,7 @@
               <img [src]="examenQuestionsFormated[i].image.url" alt="" style="width: 100%" class="radius6" />
             </div>
             <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_SINGLE_CHOICE_VALUE">
-              <span class="ft14 ft500">{{ i + 1 }}. {{ examenQuestionsFormated[i].text }} </span>
+              <span class="ft14 ft500" style=" white-space: pre-line;">{{ i + 1 }}. {{ examenQuestionsFormated[i].text }} </span>
               <div class="mgt10" fxLayout="column">
                 <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of examenQuestionsFormated[i].options; let optionIndex = index" class="mgt05">
                   <div class="pdl05 pdr05 radius4" [ngClass]="{ backGreen1: option.isCorrect }">
@@ -67,7 +67,7 @@
               </div>
             </div>
             <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_MULTIPLE_CHOICE_VALUE">
-              <p class="ft500 ft14">{{ i + 1 }}. {{ examenQuestionsFormated[i].text }}</p>
+              <p class="ft500 ft14"  style=" white-space: pre-line;">>{{ i + 1 }}. {{ examenQuestionsFormated[i].text }}</p>
               <div fxLayout="column">
                 <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of examenQuestionsFormated[i].options; let optionIndex = index" class="mgt05">
                   <div class="pdl05 pdr05 radius4" [ngClass]="{ backGreen1: option.isCorrect }">
@@ -86,7 +86,7 @@
             </div>
 
             <div *ngIf="examenQuestionsFormated[i].typeFormated.value == questionTypesModel.TYPE_TRUE_OR_FALSE_VALUE">
-              <span class="ft14 ft500">{{ i + 1 }}. {{ examenQuestionsFormated[i].text }} </span>
+              <span class="ft14 ft500"  style=" white-space: pre-line;">{{ i + 1 }}. {{ examenQuestionsFormated[i].text }} </span>
               <div class="mgt10" fxLayout="column">
                 <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let option of examenQuestionsFormated[i].options; let optionIndex = index" class="mgt05">
                   <div class="pdl05 pdr05 radius4" [ngClass]="{ backGreen1: option.isCorrect }">
@@ -133,7 +133,7 @@
                         </div> -->
 
             <div class="fw mgt10" *ngIf="examenQuestionsFormated[i]?.explanation">
-              <div class="ft500 ft12 gray-8" style="white-space: pre-wrap"><span class="ft600">Explicación: </span> {{ examenQuestionsFormated[i]?.explanation }}</div>
+              <div class="ft500 ft12 gray-8"  style=" white-space: pre-line;"><span class="ft600">Explicación: </span> {{ examenQuestionsFormated[i]?.explanation }}</div>
             </div>
           </ng-container>
           <ng-container *ngIf="questionStatus[i].editing">

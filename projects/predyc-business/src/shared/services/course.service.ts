@@ -765,11 +765,6 @@ export class CourseService {
     );
   }
 
-
-  getClassses$(): Observable<Clase[]> {
-    return this.afs.collection<Clase>(Clase.collection).valueChanges();
-  }
-
   getAllCourses$(instructorRef?): Observable<Curso[]> {
 
     if(instructorRef){
@@ -850,6 +845,14 @@ export class CourseService {
     return await firstValueFrom(
       this.afs.collection<Curso>(Curso.collection).doc(id).valueChanges()
     );
+  }
+
+  public getAllClassesFromCourses(courses: any[]): any[] {
+    // Recorrer todos los cursos, sus módulos y acumular todas las clases
+    const allClasses = courses.flatMap(course =>
+      course.modulos.flatMap(modulo => modulo.clases)
+    );
+    return allClasses;
   }
 
   // ---- courseByStudent Collection methods
@@ -2254,6 +2257,78 @@ export class CourseService {
     }
 
   }
+
+  async getCursoValoraciones(idCurso,type='grabado'): Promise<any[]> {
+    try {
+        // Obtener todos los cursos
+        let coleccionValoraciones = 'cursosValoraciones'
+        let coleccionCursos = 'course'
+        let condicionWhere = 'courseRef'
+
+        if(type == 'liveCourse'){
+          coleccionCursos = 'live-course'
+          coleccionValoraciones = 'cursosLiveValoraciones'
+          condicionWhere = 'liveCourseRef'
+        }
+
+        
+        console.log('idCurso',idCurso)
+        const courseRef = await this.afs.doc(`/${coleccionCursos}/${idCurso}`).ref
+        console.log('courseRef',courseRef)
+        const cursosSnapshot = await this.afs.collection(coleccionCursos, ref => ref.where('id', '==', idCurso)).get().toPromise();
+        const cursosData: any[] = cursosSnapshot.docs.map(doc => doc.data()); // Solo los datos
+
+        // Obtener todas las valoraciones
+        const valoracionesSnapshot = await this.afs.collection(coleccionValoraciones, ref => ref.where(condicionWhere, '==', courseRef)).get().toPromise();
+        const valoracionesData: any[] = valoracionesSnapshot.docs.map(doc => doc.data()); // Solo los datos
+
+        // Extraer los userRef de las valoraciones
+        const userRefs = valoracionesData.map(valoracion => valoracion.userRef);
+        const uniqueUserRefs = Array.from(new Set(userRefs.map(ref => ref.id))); // Obtener IDs únicos
+
+        // Dividir en grupos de 10
+        const userPromises = [];
+        for (let i = 0; i < uniqueUserRefs.length; i += 10) {
+            const batch = uniqueUserRefs.slice(i, i + 10);
+            userPromises.push(this.afs.collection('user', ref => ref.where('uid', 'in', batch)).get().toPromise());
+        }
+
+        // Obtener los usuarios en lotes
+        const userSnapshots = await Promise.all(userPromises);
+        const usersData: any[] = userSnapshots.flatMap(snapshot => snapshot.docs.map(doc => doc.data())); // Obtener todos los datos de usuarios
+
+        // Obtener todas las empresas
+        const enterprisesSnapshot = await this.afs.collection('enterprise').get().toPromise();
+        const enterprisesData: any[] = enterprisesSnapshot.docs.map(doc =>doc.data()); // Datos de empresas
+
+        // Combinar valoraciones con detalles del curso, usuario y empresa
+        const valoracionesConCursosYUsuarios = valoracionesData.map(valoracion => {
+            const cursoDetalles = cursosData.find(curso => curso.id === courseRef.id); // Encuentra el curso correspondiente
+
+            // Encuentra el usuario correspondiente
+            const userRef = valoracion.userRef; // Asumiendo que userRef es un documento de referencia
+            const usuarioDetalles = usersData.find(user => user.uid === userRef.id); // Encuentra el usuario
+
+            // Si el usuario tiene enterpriseRef, busca la empresa
+            const enterpriseRef = usuarioDetalles?.enterprise;
+            const empresaDetalles = enterpriseRef ? enterprisesData.find(enterprise => enterprise.id === enterpriseRef.id) : null; // Encuentra la empresa
+
+            let obj = {
+              ...valoracion,
+              cursoDetalles: cursoDetalles || null, // Agrega los detalles del curso
+              usuarioDetalles: usuarioDetalles || null, // Agrega los detalles del usuario
+              empresaDetalles: empresaDetalles || null // Agrega los detalles de la empresa
+            }
+            // Agrega los detalles del curso, del usuario y de la empresa a la valoración
+            return obj
+        });
+
+        return valoracionesConCursosYUsuarios; // Devuelve un arreglo de valoraciones con los detalles del curso, usuario y empresa
+    } catch (error) {
+        console.error('Error obteniendo cursos, valoraciones, usuarios y empresas:', error);
+        throw new Error('Error al obtener los datos');
+    }
+}
 
 
 

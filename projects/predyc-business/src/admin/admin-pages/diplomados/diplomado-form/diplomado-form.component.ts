@@ -83,6 +83,12 @@ export class DiplomadoFormComponent {
   hoverItem$: Observable<any>; // This will hold the currently hovered item
   private hoverSubject = new BehaviorSubject<any>(null);
 
+
+  destacadoPredyc: boolean = false
+  visiblePredyc: boolean = false
+  destacadoP21: boolean = false
+  visibleP21: boolean = false
+
   diplomadoName: string = "";
   profileDescription: string = "";
   metaDescription: string = "";
@@ -190,10 +196,15 @@ export class DiplomadoFormComponent {
             this.activityId = this.activityRef.id
           }
 
+          this.destacadoPredyc=this.diplomado.destacadoPredyc;
+          this.visiblePredyc=this.diplomado.visiblePredyc;
+          this.destacadoP21=this.diplomado.destacadoP21;
+          this.visibleP21=this.diplomado.visibleP21;
+
           this.profileDescription = this.diplomado.description;
           this.metaDescription = this.diplomado.metaDescription;
           this.keyWords = this.diplomado.keyWords;
-          this.slug = this.diplomado.slug;
+          this.slug = this.diplomado.slug ? this.diplomado.slug: this.diplomado.id;
           this.profileHoursPerMonth = this.diplomado.hoursPerMonth;
         }
         this.studyPlan = [];
@@ -337,9 +348,13 @@ export class DiplomadoFormComponent {
         duration:this.duration,
         activityRef:this.activityRef,
         description: this.profileDescription,
+        destacadoPredyc: this.destacadoPredyc,
+        visiblePredyc: this.visiblePredyc,
+        destacadoP21: this.destacadoP21,
+        visibleP21: this.visibleP21,
         metaDescription: this.metaDescription,
         keyWords: this.keyWords,
-        slug: this.slug,
+        slug: this.slug ? this.slug : this.diplomado.id,
         selectedCourses: this.studyPlan.map((item) => {
           return {
             courseId: item.id,
@@ -625,6 +640,13 @@ export class DiplomadoFormComponent {
         };
       });
 
+      const coursesData: {courseData: any; studyPlanOrder: number;}[] = this.studyPlan.map((course) => {
+        return {
+          courseData:course,
+          studyPlanOrder: course.studyPlanOrder,
+        };
+      });
+
       //console.log('coursesRef',coursesRef)
 
       if (!coursesRef || coursesRef.length == 0){
@@ -650,7 +672,12 @@ export class DiplomadoFormComponent {
         type: this.type,
         activityRef: this.activityRef?this.activityRef:null,
         description: this.profileDescription,
+        destacadoPredyc:this.destacadoPredyc,
+        visiblePredyc:this.visiblePredyc,
+        destacadoP21:this.destacadoP21,
+        visibleP21:this.visibleP21,
         coursesRef: coursesRef,
+        // coursesData:coursesData,
         baseDiplomado: this.diplomado?.baseDiplomado
           ? this.diplomado?.baseDiplomado
           : baseDiplomado,
@@ -659,7 +686,7 @@ export class DiplomadoFormComponent {
         hoursPerMonth: this.profileHoursPerMonth,
         metaDescription: this.metaDescription,
         keyWords: this.keyWords,
-        slug: this.slug
+        slug: this.slug?  this.slug: this.diplomado.id
       });
 
       console.log('diplomado save',diplomado)

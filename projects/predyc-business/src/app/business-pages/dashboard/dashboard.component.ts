@@ -106,11 +106,11 @@ export class DashboardComponent {
         this.generatinReport = false;
         this.displayErrors = false;
 
-        const [profiles, departments, courses, classes, tests] = await Promise.all([
+        const [profiles, departments, courses, tests] = await Promise.all([
           firstValueFrom(this.profileService.getProfiles$()),
           firstValueFrom(this.departmentService.getDepartments$()),
           firstValueFrom(this.courseService.getCourses$()),
-          firstValueFrom(this.courseService.getClassesEnterprise$()),
+          // firstValueFrom(this.courseService.getClassesEnterprise$()),
           firstValueFrom(this.activityClassesService.getTestProfileResultsEnterprise())
         ]);
         
@@ -122,8 +122,10 @@ export class DashboardComponent {
         this.profiles = profiles;
         this.departments = departments;
         this.courses = courses;
-        this.classes = classes
         this.testUsers = tests
+        
+        this.classes = this.courseService.getAllClassesFromCourses(courses)
+        // console.log("classes", this.classes)
 
         let users = [...this.allUsers]
         const usersRefs = users.map(x => this.userService.getUserRefById(x.uid))

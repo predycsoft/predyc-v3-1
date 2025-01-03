@@ -648,8 +648,10 @@ export class CreateProgramP21Component {
                       startWith(""),
                       map((value) => this._filter(value || ""))
                     );
-                    instructor =  this.instructores.find(x=>x.id == clase['instructorData'].id)
-                    instructoresFormClase.patchValue(instructor);      
+                    instructor =  this.instructores.find(x=>x.id == clase?.instructorData?.id)
+                    if(instructor){
+                      instructoresFormClase.patchValue(instructor);      
+                    }
                     clase['instructoresForm'] = instructoresFormClase
                     clase['filteredinstructores'] = filteredinstructoresClase
                   }                    

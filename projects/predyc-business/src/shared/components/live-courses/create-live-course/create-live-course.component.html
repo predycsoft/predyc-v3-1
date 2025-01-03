@@ -15,6 +15,18 @@
           <ng-container *ngIf="formNewCourse">
             <input (change)="changeBorrador($event)" type="checkbox" [checked]="formNewCourse?.get('proximamente')?.value" />
             <label style="padding-top: 5px; padding-left: 5px; color: white">Borrador</label>
+            <div  *ngIf="user.isSystemUser" fxLayout="row" fxLayoutAlign="start center">
+              <button
+                  fxLayout="row"
+                  fxLayoutGap="0.625"
+                  fxLayoutAlign="center center"
+                  (click)="getValoraciones()"
+                  class="blueButton ft14 cursorPointer mgl10"
+                  style="border-radius: 24px !important;">
+                  Descargar valoraciones
+                  <img [src]="icon.download" class="h16px pdl05 makeWhite" alt="">
+              </button>                        
+            </div>
           </ng-container>
         </div>
         <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign=" center">

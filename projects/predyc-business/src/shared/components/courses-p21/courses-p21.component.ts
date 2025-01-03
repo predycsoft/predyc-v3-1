@@ -359,25 +359,74 @@ export class CoursesP21Component {
       .map((key) => key.split(' ')[1]) // Extraer los años de las claves
       .filter((year, index, self) => self.indexOf(year) === index); // Eliminar duplicados
     
-    const { value: selectedYear } = await Swal.fire({
-      title: 'Selecciona un año',
-      input: 'select',
-      inputOptions: years.reduce((acc, year) => {
-        acc[year] = year; // Construir opciones para el select
-        return acc;
-      }, {}),
-      inputPlaceholder: 'Seleccione un año',
+    // const { value: selectedYear } = await Swal.fire({
+    //   title: 'Selecciona un año',
+    //   input: 'select',
+    //   inputOptions: years.reduce((acc, year) => {
+    //     acc[year] = year; // Construir opciones para el select
+    //     return acc;
+    //   }, {}),
+    //   inputPlaceholder: 'Seleccione un año',
+    //   showCancelButton: true,
+    //   confirmButtonText: 'Confirmar',
+    //   cancelButtonText: 'Cancelar',
+    // });
+    const modalidades = ['Presencial', 'En línea en vivo','Todos']; // Opciones de modalidad
+    const { value: formValues } = await Swal.fire({
+      title: 'Seleccionar Año y Modalidad',
+      html: `
+        <select id="year" class="swal2-input">
+          <option value="">Seleccione un año</option>
+          ${years.map(year => `<option value="${year}">${year}</option>`).join('')}
+        </select>
+        <select id="mode" class="swal2-input">
+          <option value="">Seleccione una modalidad</option>
+          ${modalidades.map(mod => `<option value="${mod}">${mod}</option>`).join('')}
+        </select>
+      `,
+      focusConfirm: false,
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        const year = (document.getElementById('year') as HTMLSelectElement).value;
+        const mode = (document.getElementById('mode') as HTMLSelectElement).value;
+  
+        if (!year || !mode) {
+          Swal.showValidationMessage('Debe seleccionar un año y una modalidad');
+        }
+        return { year, mode };
+      }
     });
+
+    const { year: selectedYear, mode: selectedMode } = formValues;
+
     
-    if (selectedYear) {
+    if (selectedYear && selectedMode) {
+      let cursosLocal = filteredCourses
+      if(selectedMode != 'Todos'){
+        cursosLocal = filteredCourses.filter(x=>x.modalidad == selectedMode)
+      }
+
+      // Agrupar cursos por mes
+      const groupedByMonthLocal = cursosLocal.reduce((acc, course) => {
+        const courseDate = parseDateLiteral(course.fechaInicio); // Usar la función auxiliar
+        const year = courseDate.getFullYear();
+        const month = new Intl.DateTimeFormat("es-ES", { month: "long" }).format(courseDate);
+        const key = `${month} ${year}`;
+
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(course);
+        return acc;
+      }, {});
+  
       // Filtrar las claves del objeto que no sean del año seleccionado
-      const filteredCursosPDF = Object.keys(groupedByMonth)
+      const filteredCursosPDF = Object.keys(groupedByMonthLocal)
         .filter((key) => key.includes(selectedYear)) // Mantener solo las claves del año seleccionado
         .reduce((obj, key) => {
-          obj[key] = groupedByMonth[key]; // Reconstruir el objeto con las claves filtradas
+          obj[key] = groupedByMonthLocal[key]; // Reconstruir el objeto con las claves filtradas
           return obj;
         }, {});
     
@@ -392,7 +441,15 @@ export class CoursesP21Component {
           clases: cursosPDF[key]
       }));
 
-        await this.pdfService.downloadCalendarioP21(cursosPDF,selectedYear, 'Calendario cursos', false);
+        let textoModalidad = selectedMode
+        if(textoModalidad == 'Todos'){
+          textoModalidad = 'En línea, en vivo, presencial'
+        }
+        else if(textoModalidad == 'En línea en vivo'){
+          textoModalidad = 'En línea, en vivo'
+        }
+
+        await this.pdfService.downloadCalendarioP21(cursosPDF,selectedYear, 'Calendario cursos', false,textoModalidad);
       } catch (error) {
         console.error(error);
       } finally {

@@ -21,7 +21,16 @@ export class ModuleService {
   async saveModulo(newModulo: Modulo,idCourse): Promise<void> {
     try {
       try {
-        await this.afs.collection(Curso.collection) // Referenciamos la colección principal
+        // await this.afs.collection(Curso.collection) // Referenciamos la colección principal
+        // .doc(idCourse) // Referenciamos el documento principal
+        // .collection(Modulo.collection) // Referenciamos la subcolección
+        // .doc(newModulo.id) // Referenciamos el documento en la subcolección, o .add() para crear uno con ID automático
+        // .set(newModulo.toJson(), { merge: true }); // Guardamos/actualizamos el documento en la subcolección
+
+
+        //----- backup collection
+        await this.afs.collection("module-backup").doc(idCourse).set({id: idCourse}, {merge: true});
+        await this.afs.collection(Modulo.backupCollection) // Referenciamos la colección principal
         .doc(idCourse) // Referenciamos el documento principal
         .collection(Modulo.collection) // Referenciamos la subcolección
         .doc(newModulo.id) // Referenciamos el documento en la subcolección, o .add() para crear uno con ID automático
@@ -39,7 +48,15 @@ export class ModuleService {
 
   async deleteModulo(moduloId: string, idCourse: string): Promise<void> {
     try {
-      await this.afs.collection(Curso.collection) // Referenciamos la colección principal
+      // await this.afs.collection(Curso.collection) // Referenciamos la colección principal
+      //   .doc(idCourse) // Referenciamos el documento principal
+      //   .collection(Modulo.collection) // Referenciamos la subcolección
+      //   .doc(moduloId) // Referenciamos el documento en la subcolección que deseamos eliminar
+      //   .delete(); // Eliminamos el documento de la subcolección
+
+      
+        //----- backup collection
+      await this.afs.collection(Modulo.backupCollection) // Referenciamos la colección principal
         .doc(idCourse) // Referenciamos el documento principal
         .collection(Modulo.collection) // Referenciamos la subcolección
         .doc(moduloId) // Referenciamos el documento en la subcolección que deseamos eliminar

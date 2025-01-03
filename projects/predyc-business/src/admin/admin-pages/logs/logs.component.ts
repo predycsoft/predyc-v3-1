@@ -18,6 +18,8 @@ import { Clase } from 'projects/shared/models/course-class.model';
 import { UserService } from 'projects/predyc-business/src/shared/services/user.service';
 import { ClassByStudent } from 'projects/shared/models/class-by-student.model';
 import { firstValueFrom } from 'rxjs';
+import { environment } from "projects/predyc-business/src/environments/environment";
+
 
 export interface GroupedLogs {
   componentName: string;
@@ -443,16 +445,71 @@ export class LogsComponent {
   
   }
 
-  // async debug() {
-  //   const userRef = this.userService.getUserRefById("qy1TEjyACVS4yhYwivMmKTN6mi93") 
-  //   console.log("userRef", userRef)
-  //   // const coursesByStudent = await this.courseService.getActiveCoursesByStudentByUserRefs([userRef])
-  //   const coursesByStudent = (await this.afs.collection(CourseByStudent.collection).ref.where("userRef", "==", userRef).get()).docs.map(x=> x.data())
-  //   console.log("coursesByStudent", coursesByStudent)
+  async migrateModulesToBackup() {
+    const allCoursesSnapshot = await this.afs.collection(Curso.collection).ref.get();
+    const allCourses = allCoursesSnapshot.docs.map(x => x.data() as Curso);
+    console.log("***** Starting migration of modules to backup...");
+  
+    for (const course of allCourses) {
+      console.log("----- Migrating modules for course:", course.titulo);
+  
+      const subcollectionRef = this.afs.collection(Curso.collection).doc(course.id).collection(Modulo.collection).ref;
+      const subcollectionSnapshot = await subcollectionRef.get();
+  
+      const migrationPromises = subcollectionSnapshot.docs.map(async doc => {
+        const data = doc.data();
+        await this.afs.collection("module-backup").doc(course.id).set({id: course.id});
+        const backupPath = `module-backup/${course.id}/module`;
+        await this.afs.collection(backupPath).doc(doc.id).set(data); // Copy to backup
+      });
+  
+      await Promise.all(migrationPromises);
+      console.log(`Migrated modules for course: ${course.titulo}`);
+    }
+  
+    console.log("XXXXXXX Migration complete");
+  }
 
-  //   const classByStudent = (await this.afs.collection(ClassByStudent.collection).ref.where("userRef", "==", userRef).get()).docs.map(x=> x.data())
-  //   console.log("classByStudent", classByStudent)
-  // }
+  async deleteModules() {
+    const allCoursesSnapshot = await this.afs.collection(Curso.collection).ref.get()
+    const allCourses = allCoursesSnapshot.docs.map(x => x.data() as Curso)
+    console.log("***** allCourses", allCourses)
+
+    for (const course of allCourses) {
+      console.log("----- Deleting subcollection for course:", course.titulo);
+      const subcollectionRef = this.afs.collection(Curso.collection).doc(course.id).collection(Modulo.collection).ref;
+      
+      const subcollectionSnapshot = await subcollectionRef.get();
+      const deletePromises = subcollectionSnapshot.docs.map(doc => doc.ref.delete());
+  
+      await Promise.all(deletePromises);
+    }
+    console.log("XXXXXXX Fin",allCourses)
+  
+  }
+
+  async restoreModulesFromBackup() {
+    const backupSnapshot = await this.afs.collection("module-backup").ref.get();
+    const allCoursesId = backupSnapshot.docs.map(doc => doc.ref.id);
+  
+    console.log("***** Starting restoration of modules from backup...");
+    console.log("allCoursesId", allCoursesId)
+  
+    for (const courseId of allCoursesId) {
+      const backupPath = `module-backup/${courseId}/module`;
+      const backupSubcollectionSnapshot = await this.afs.collection(backupPath).ref.get();
+  
+      const restorePromises = backupSubcollectionSnapshot.docs.map(async doc => {
+        const data = doc.data();
+        await this.afs.collection(Curso.collection).doc(courseId).collection(Modulo.collection).doc(doc.id).set(data); // Restore to original
+      });
+  
+      await Promise.all(restorePromises);
+      console.log(`Restored modules for course: ${courseId}`);
+    }
+  
+    console.log("XXXXXXX Restoration complete");
+  }
   
 }
 

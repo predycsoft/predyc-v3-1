@@ -471,8 +471,8 @@ export class StudentStudyPlanAndCompetencesComponent {
       const courseByStudent: CourseByStudent | null = await this.courseService.getCourseByStudent(userRef as DocumentReference<User>, coursesRefs[i] as DocumentReference<Curso>);      
       if (courseByStudent && courseByStudent.dateEnd) { // If it already exists and is completed, deactivate it to avoid puting it into the studyplan
         console.log(courseByStudent.id, "is completed")
-        await this.courseService.setCourseByStudentInactive(courseByStudent.id);
-        continue
+        // await this.courseService.setCourseByStudentInactive(courseByStudent.id);
+        // continue
       }
       // console.log("Continue to studyPlan")
 

@@ -698,10 +698,15 @@ async function updateDataAllEnterprisesMonthlyClassesLocal() {
     });
     const uniqueEnterpriseIds = Array.from(enterpriseIds);
     
+    const coursesSnapshot = await admin.firestore().collection(Curso.collection).get();
+    const courses: FirebaseFirestore.DocumentData[] = coursesSnapshot.docs.map(doc => doc.data());
+
     // Obtenemos todas las clases
-    const classesSnapshot = await admin.firestore().collection(Clase.collection).get();
-    const classes: FirebaseFirestore.DocumentData[] = classesSnapshot.docs.map(doc => doc.data());
-    // console.log("classes.length", classes.length)
+    // const classesSnapshot = await admin.firestore().collection(Clase.collection).get();
+    // const classesOld: FirebaseFirestore.DocumentData[] = classesSnapshot.docs.map(doc => doc.data());
+    const classes = courses.flatMap(course =>
+      course.modulos.flatMap(modulo => modulo.clases)
+    );
 
     for (const enterpriseId of uniqueEnterpriseIds) {
       await updateDataEnterpriseMonthlyClassesLocal(enterpriseId, classes, batch);
@@ -774,7 +779,7 @@ async function updateDataEnterpriseMonthlyClassesLocal(enterpriseId: string, cla
     const logs = allUsersClassesByStudent.map(classByStudent => {
       const clase = classes.find(x => x.id === classByStudent.classRef.id)
       return {
-        classDuration: clase.duracion as number,
+        classDuration: clase ? clase.duracion as number : 0,
         endDate: firestoreTimestampToNumberTimestamp(classByStudent.dateEnd)
       };
     })
@@ -786,7 +791,7 @@ async function updateDataEnterpriseMonthlyClassesLocal(enterpriseId: string, cla
 
       dataToSave = [...monthlyClassesData]
     
-      const monthLabel = now.toLocaleString('default', { month: 'short' }).replace(/\.$/, '');
+      const monthLabel = now.toLocaleString('es-ES', { month: 'short' }).replace(/\.$/, '');
       const label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Capitalize the first letter
   
       // Step 2: Calculate value for the current month
@@ -815,7 +820,7 @@ async function updateDataEnterpriseMonthlyClassesLocal(enterpriseId: string, cla
       // Generate data for the last 12 months if no existing data
       for (let i = 0; i < 12; i++) {
         const month = getPreviousMonthDate(now, i);
-        const monthLabel = month.toLocaleString('default', { month: 'short' }).replace(/\.$/, '');
+        const monthLabel = now.toLocaleString('es-ES', { month: 'short' }).replace(/\.$/, '');
         const label = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1); // Capitalize the first letter
     
         // Calculate values for all months
